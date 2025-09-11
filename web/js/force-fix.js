@@ -14,7 +14,6 @@
         
         if (navbar) {
             navbar.style.cssText = `
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
                 position: fixed !important;
                 top: 0 !important;
                 width: 100% !important;
@@ -23,9 +22,16 @@
                 visibility: visible !important;
                 opacity: 1 !important;
                 height: 70px !important;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
             `;
-            console.log('✅ 导航栏样式已应用');
+            // 移除任何内联的背景样式，让CSS类控制透明效果
+            navbar.style.removeProperty('background');
+            navbar.style.removeProperty('box-shadow');
+            
+            // 添加滚动监听以实现透明效果
+            initNavbarTransparency();
+            // 强制设置文字颜色
+            setTimeout(() => forceNavbarTextColors(), 100);
+            console.log('✅ 透明导航栏样式已应用');
         }
         
         if (navContainer) {
@@ -56,18 +62,32 @@
         const navLinks = document.querySelectorAll('.nav-link');
         navLinks.forEach(link => {
             link.style.cssText = `
-                color: white !important;
+                color: #495057 !important;
                 text-decoration: none !important;
-                font-weight: 500 !important;
-                padding: 8px 16px !important;
-                border-radius: 20px !important;
+                font-weight: 600 !important;
+                padding: 10px 20px !important;
+                border-radius: 8px !important;
                 transition: all 0.3s ease !important;
+                text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8) !important;
             `;
         });
         
         console.log(`✅ ${navLinks.length} 个导航链接样式已应用`);
+        
+        // 强制修复logo颜色
+        const navLogo = document.querySelector('.nav-logo h2');
+        if (navLogo) {
+            navLogo.style.cssText = `
+                color: #343a40 !important;
+                font-weight: 700 !important;
+                margin: 0 !important;
+                text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8) !important;
+                transition: all 0.3s ease !important;
+            `;
+            console.log('✅ Logo样式已强制应用为深色');
+        }
     }
-    
+
     // 强制修复Hero区域
     function forceHeroFix() {
         console.log('🎯 修复Hero区域...');
@@ -84,7 +104,7 @@
                 display: flex !important;
                 align-items: center !important;
                 justify-content: center !important;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
                 visibility: visible !important;
                 opacity: 1 !important;
             `;
@@ -134,7 +154,7 @@
                 left: 0 !important;
                 right: 0 !important;
                 height: 4px !important;
-                background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe) !important;
+                background: linear-gradient(90deg, #495057, #6c757d, #adb5bd, #dee2e6, #e9ecef, #f8f9fa) !important;
                 z-index: 1001 !important;
                 display: block !important;
                 visibility: visible !important;
@@ -167,6 +187,12 @@
         forceHeroFix();
         forceDecorationFix();
         forceMainContentFix();
+        
+        // 延迟执行文字颜色强制修复
+        setTimeout(() => {
+            forceNavbarTextColors();
+            console.log('🎨 导航栏文字颜色强制修复完成');
+        }, 200);
         
         console.log('✨ 所有强制修复完成！');
     }
@@ -207,8 +233,74 @@
         console.log(`🔍 开始监听 ${elements.length} 个关键元素的样式变化`);
     }, 100);
     
+    // 导航栏透明度滚动效果
+    function initNavbarTransparency() {
+        const navbar = document.querySelector('.navbar');
+        if (!navbar) return;
+        
+        let ticking = false;
+        
+        function updateNavbar() {
+            const scrollY = window.scrollY;
+            
+            if (scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+            
+            // 强制确保文字颜色正确
+            forceNavbarTextColors();
+            ticking = false;
+        }
+        
+        function onScroll() {
+            if (!ticking) {
+                requestAnimationFrame(updateNavbar);
+                ticking = true;
+            }
+        }
+        
+        window.addEventListener('scroll', onScroll, { passive: true });
+        updateNavbar(); // 初始检查
+        
+        console.log('🌟 导航栏透明滚动效果已启用');
+    }
+    
+    // 强制设置导航栏文字颜色
+    function forceNavbarTextColors() {
+        // 强制Logo颜色
+        const navLogo = document.querySelector('.nav-logo h2');
+        if (navLogo) {
+            navLogo.style.setProperty('color', '#343a40', 'important');
+            navLogo.style.setProperty('text-shadow', '0 1px 2px rgba(255, 255, 255, 0.8)', 'important');
+        }
+        
+        // 强制导航链接颜色
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.style.setProperty('color', '#495057', 'important');
+            link.style.setProperty('text-shadow', '0 1px 2px rgba(255, 255, 255, 0.8)', 'important');
+        });
+        
+        // 强制汉堡菜单颜色
+        const bars = document.querySelectorAll('.bar');
+        bars.forEach(bar => {
+            bar.style.setProperty('background', '#495057', 'important');
+        });
+        
+        console.log('💪 导航栏文字颜色强制设置为深色');
+    }
+    
+    // 设置定期检查，确保文字颜色不被覆盖
+    setInterval(() => {
+        forceNavbarTextColors();
+    }, 2000); // 每2秒检查一次
+    
     // 暴露到全局供调试使用
     window.forceFix = executeAllFixes;
+    window.initNavbarTransparency = initNavbarTransparency;
+    window.forceNavbarTextColors = forceNavbarTextColors;
     
     console.log('🎉 强制样式修复器已初始化！');
     

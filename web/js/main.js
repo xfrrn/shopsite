@@ -40,26 +40,27 @@ function forceApplyStyles() {
             left: 0 !important;
             right: 0 !important;
             height: 4px !important;
-            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe) !important;
+            background: linear-gradient(90deg, #495057, #6c757d, #adb5bd, #dee2e6, #e9ecef, #f8f9fa) !important;
             z-index: 1001 !important;
         `;
         document.body.insertBefore(decoration, document.body.firstChild);
     }
     
-    // 强制显示导航栏
+    // 初始化透明导航栏
     const navbar = document.querySelector('.navbar');
     if (navbar) {
         navbar.style.cssText = `
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
             position: fixed !important;
             top: 0 !important;
             width: 100% !important;
             z-index: 1000 !important;
             display: block !important;
             visibility: visible !important;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
         `;
-        console.log('导航栏样式已强制应用');
+        console.log('透明导航栏初始化完成');
+        
+        // 添加滚动监听
+        initNavbarScrollEffect();
     }
     
     // 强制显示hero区域
@@ -72,7 +73,7 @@ function forceApplyStyles() {
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
         `;
         console.log('Hero区域样式已强制应用');
     }
@@ -614,6 +615,45 @@ function initScrollAnimations() {
             scrollToSection(targetId);
         });
     });
+}
+
+// 导航栏滚动透明效果
+function initNavbarScrollEffect() {
+    const navbar = document.querySelector('.navbar');
+    if (!navbar) return;
+    
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+    
+    function updateNavbar() {
+        const scrollY = window.scrollY;
+        
+        if (scrollY > 50) {
+            // 滚动超过50px时显示背景
+            navbar.classList.add('scrolled');
+        } else {
+            // 回到顶部时恢复透明
+            navbar.classList.remove('scrolled');
+        }
+        
+        lastScrollY = scrollY;
+        ticking = false;
+    }
+    
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(updateNavbar);
+            ticking = true;
+        }
+    }
+    
+    // 监听滚动事件
+    window.addEventListener('scroll', requestTick, { passive: true });
+    
+    // 初始检查
+    updateNavbar();
+    
+    console.log('导航栏滚动效果已初始化');
 }
 
 // 在初始化页面时调用

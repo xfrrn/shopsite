@@ -44,16 +44,25 @@ body {
 
 /* 导航栏强制样式 */
 .navbar {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: var(--shadow-sm);
-    border-bottom: 1px solid var(--border-color);
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    border-bottom: none !important;
     position: fixed !important;
     top: 0 !important;
     width: 100% !important;
     z-index: 1000 !important;
-    transition: background 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.3s ease !important;
+}
+
+/* 滚动后的导航栏样式 */
+.navbar.scrolled {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 
 .nav-container {
@@ -67,10 +76,18 @@ body {
 }
 
 .nav-logo h2 {
-    color: var(--primary-dark) !important;
+    color: #343a40 !important;
     font-weight: 700 !important;
     margin: 0 !important;
     font-size: 1.75rem;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+}
+
+/* 滚动后的logo颜色 */
+.navbar.scrolled .nav-logo h2 {
+    color: var(--primary-dark) !important;
+    text-shadow: none;
 }
 
 .nav-menu {
@@ -86,23 +103,45 @@ body {
 }
 
 .nav-link {
-    color: var(--text-muted) !important;
+    color: #495057 !important;
     text-decoration: none !important;
     font-weight: 600 !important;
-    transition: color 0.3s ease, background-color 0.3s ease !important;
+    transition: all 0.3s ease !important;
     padding: 10px 20px !important;
     border-radius: 8px !important;
     position: relative;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* 滚动后的导航链接颜色 */
+.navbar.scrolled .nav-link {
+    color: var(--text-muted) !important;
+    text-shadow: none;
 }
 
 .nav-link:hover {
-    color: var(--primary-dark) !important;
-    background-color: rgba(37, 99, 235, 0.1) !important;
+    color: #343a40 !important;
+    background-color: rgba(0, 0, 0, 0.1) !important;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
 }
 
 .nav-link.active {
+    color: rgba(255, 255, 255, 1) !important;
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* 滚动后的悬停效果 */
+.navbar.scrolled .nav-link:hover {
+    color: var(--primary-dark) !important;
+    background-color: rgba(37, 99, 235, 0.1) !important;
+    text-shadow: none;
+}
+
+.navbar.scrolled .nav-link.active {
     color: var(--primary-color) !important;
     background-color: rgba(37, 99, 235, 0.05) !important;
+    text-shadow: none;
 }
 
 .hamburger {
@@ -114,9 +153,14 @@ body {
 .bar {
     width: 25px !important;
     height: 3px !important;
-    background: var(--text-dark) !important;
+    background: #495057 !important;
     margin: 3px 0 !important;
-    transition: 0.3s !important;
+    transition: all 0.3s ease !important;
+}
+
+/* 滚动后的汉堡菜单颜色 */
+.navbar.scrolled .bar {
+    background: var(--text-dark) !important;
 }
 
 /* 主要内容 */
