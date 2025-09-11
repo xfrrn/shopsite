@@ -143,6 +143,34 @@ async def health_check():
         "version": "1.0.0"
     }
 
+@app.get("/api/health")
+async def api_health_check():
+    """API健康检查"""
+    try:
+        # 测试数据库连接
+        from sqlalchemy import text
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        
+        return {
+            "status": "healthy",
+            "api": "OK",
+            "database": "OK",
+            "message": "所有服务运行正常",
+            "timestamp": "2025-09-11T00:00:00Z"
+        }
+    except Exception as e:
+        return JSONResponse(
+            status_code=503,
+            content={
+                "status": "unhealthy",
+                "api": "OK",
+                "database": "ERROR",
+                "message": f"数据库连接失败: {str(e)}",
+                "timestamp": "2025-09-11T00:00:00Z"
+            }
+        )
+
 # 运行应用
 if __name__ == "__main__":
     app_config = AppConfig()
