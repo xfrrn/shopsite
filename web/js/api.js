@@ -5,8 +5,17 @@
 
 class API {
     constructor() {
-        this.baseURL = 'http://localhost:8000/api';
+        // 动态获取基础URL，支持本地开发和服务器部署
+        const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        if (isDevelopment) {
+            this.baseURL = 'http://localhost:8000/api';
+        } else {
+            // 在服务器上使用相对路径或当前域名
+            this.baseURL = `${window.location.protocol}//${window.location.host}/api`;
+        }
         this.token = localStorage.getItem('admin_token');
+        
+        console.log('API Base URL:', this.baseURL);
     }
 
     // 获取请求头
