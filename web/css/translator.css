@@ -1,0 +1,405 @@
+/* 自动翻译器样式 */
+.language-selector {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.language-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.language-btn {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    min-width: 120px;
+    justify-content: space-between;
+}
+
+.language-btn:hover {
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+}
+
+.language-btn i {
+    transition: transform 0.3s ease;
+    color: #666;
+    font-size: 12px;
+}
+
+.language-menu.show .language-btn i {
+    transform: rotate(180deg);
+}
+
+.language-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    min-width: 200px;
+    max-height: 300px;
+    overflow-y: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    margin-top: 5px;
+}
+
+.language-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.language-option {
+    padding: 12px 15px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.language-option:last-child {
+    border-bottom: none;
+}
+
+.language-option:hover {
+    background-color: #f8f9fa;
+}
+
+.language-option.active {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    font-weight: 500;
+}
+
+.language-option.active .lang-code {
+    color: #1976d2;
+    font-weight: 600;
+}
+
+.lang-name {
+    font-size: 14px;
+}
+
+.lang-code {
+    font-size: 12px;
+    color: #666;
+    font-weight: 500;
+    padding: 2px 6px;
+    background: #f5f5f5;
+    border-radius: 4px;
+}
+
+/* 翻译中遮罩（改进版） */
+.translating-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: all 0.3s ease;
+}
+
+.translating-content {
+    background: #fff;
+    padding: 40px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    max-width: 320px;
+    width: 90%;
+    transform: translateY(0);
+    transition: all 0.3s ease;
+}
+
+.translation-progress {
+    position: relative;
+    width: 60px;
+    height: 60px;
+}
+
+.loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #1976d2;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.progress-ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60px;
+    height: 60px;
+}
+
+.progress-ring circle {
+    transition: stroke-dashoffset 0.5s ease;
+    transform: rotate(-90deg);
+    transform-origin: center;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.translating-text {
+    font-size: 18px;
+    color: #333;
+    font-weight: 600;
+    margin: 0;
+}
+
+.translation-progress-text {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+    min-height: 20px;
+    transition: all 0.3s ease;
+}
+
+/* 翻译动画效果 */
+.translating-element {
+    transition: opacity 0.3s ease, transform 0.3s ease !important;
+}
+
+.translating-element.fade-out {
+    opacity: 0.5;
+    transform: translateY(-2px);
+}
+
+.translating-element.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 语言选择器改进动画 */
+.language-btn {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 120px;
+    justify-content: space-between;
+    backdrop-filter: blur(10px);
+}
+
+.language-btn:hover {
+    background: #fff;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    border-color: #1976d2;
+}
+
+.language-btn:active {
+    transform: translateY(-1px);
+    transition: all 0.1s ease;
+}
+
+.language-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    min-width: 200px;
+    max-height: 300px;
+    overflow-y: auto;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px) scale(0.95);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-top: 8px;
+    backdrop-filter: blur(20px);
+}
+
+.language-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.language-option {
+    padding: 14px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-bottom: 1px solid #f5f5f5;
+    position: relative;
+}
+
+.language-option:first-child {
+    border-radius: 12px 12px 0 0;
+}
+
+.language-option:last-child {
+    border-bottom: none;
+    border-radius: 0 0 12px 12px;
+}
+
+.language-option::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 3px;
+    background: #1976d2;
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.language-option:hover::before {
+    transform: scaleY(1);
+}
+
+.language-option:hover {
+    background-color: #f8f9fa;
+    padding-left: 20px;
+}
+
+.language-option.active {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    font-weight: 600;
+}
+
+.language-option.active::before {
+    transform: scaleY(1);
+}
+
+.lang-code {
+    font-size: 12px;
+    color: #666;
+    font-weight: 500;
+    padding: 4px 8px;
+    background: #f5f5f5;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.language-option:hover .lang-code {
+    background: #e0e0e0;
+}
+
+.language-option.active .lang-code {
+    color: #1976d2;
+    background: rgba(25, 118, 210, 0.1);
+    font-weight: 600;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .language-selector {
+        top: 10px;
+        right: 10px;
+    }
+
+    .language-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+        min-width: 100px;
+    }
+
+    .language-menu {
+        min-width: 180px;
+    }
+
+    .language-option {
+        padding: 10px 12px;
+    }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+    .language-btn {
+        background: rgba(30, 30, 30, 0.95);
+        border-color: #404040;
+        color: #e0e0e0;
+    }
+
+    .language-btn:hover {
+        background: #2a2a2a;
+    }
+
+    .language-menu {
+        background: #2a2a2a;
+        border-color: #404040;
+    }
+
+    .language-option {
+        color: #e0e0e0;
+        border-color: #404040;
+    }
+
+    .language-option:hover {
+        background-color: #3a3a3a;
+    }
+
+    .language-option.active {
+        background-color: #1e3a5f;
+        color: #64b5f6;
+    }
+
+    .lang-code {
+        background: #404040;
+        color: #ccc;
+    }
+
+    .translating-content {
+        background: #2a2a2a;
+        color: #e0e0e0;
+    }
+}

@@ -1,0 +1,69 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# FastAPI
+.env
+.venv
+env/
+venv/
+
+# Database
+*.db
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Uploads (可选，根据需要调整)
+uploads/*
+!uploads/.gitkeep
+
+# Test files
+test_*.py
+*_test.py
+debug_*.py
+
+# Backup files
+*.backup
+*.bak
+*~
+
+# Migration scripts (一次性使用)
+migrate_*.py
+add_*.py
+
+# Check scripts (开发调试用)
+check_*.py
+simple_*.py

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理后台 - 产品展示网站</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    
+    <!-- 预加载关键资源 -->
+    <link rel="preload" href="css/admin.css" as="style">
+    <link rel="preload" href="css/fontawesome.min.css" as="style">
+    <link rel="preload" href="js/api.js" as="script">
+    <link rel="preload" href="js/admin.js" as="script">
+    
+    <!-- 样式表 -->
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/fontawesome.min.css">
+    <link rel="stylesheet" href="css/fontawesome-fix.css">
+    <link rel="stylesheet" href="css/performance.css">
+    <link rel="stylesheet" href="css/admin-effects.css">
+</head>
+<body>
+    <!-- 登录页面 -->
+    <div id="login-page" class="login-container">
+        <div class="login-box">
+            <h2><i class="fas fa-user-shield"></i> 管理员登录</h2>
+            <form id="login-form">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" placeholder="用户名" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="密码" required>
+                </div>
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> 登录
+                </button>
+            </form>
+            <div class="login-help">
+                <p>默认账户：admin / admin123</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 管理后台主界面 -->
+    <div id="admin-panel" class="admin-panel" style="display: none;">
+        <!-- 侧边栏 -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-cogs"></i> 管理后台</h3>
+            </div>
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="#dashboard" class="menu-item active" data-section="dashboard">
+                        <i class="fas fa-tachometer-alt"></i> 仪表板
+                    </a>
+                </li>
+                <li>
+                    <a href="#categories" class="menu-item" data-section="categories">
+                        <i class="fas fa-tags"></i> 分类管理
+                    </a>
+                </li>
+                <li>
+                    <a href="#products" class="menu-item" data-section="products">
+                        <i class="fas fa-box"></i> 产品管理
+                    </a>
+                </li>
+                <li>
+                    <a href="#featured-products" class="menu-item" data-section="featured-products">
+                        <i class="fas fa-star"></i> 特色产品
+                    </a>
+                </li>
+                <li>
+                    <a href="#background-images" class="menu-item" data-section="background-images">
+                        <i class="fas fa-image"></i> 背景图管理
+                    </a>
+                </li>
+                <li>
+                    <a href="#uploads" class="menu-item" data-section="uploads">
+                        <i class="fas fa-upload"></i> 文件上传
+                    </a>
+                </li>
+                <li>
+                    <a href="#settings" class="menu-item" data-section="settings">
+                        <i class="fas fa-cog"></i> 系统设置
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 顶部栏 -->
+            <header class="top-bar">
+                <div class="page-title">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span id="current-page-title">仪表板</span>
+                </div>
+                <div class="user-info">
+                    <span id="admin-name">管理员</span>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> 退出
+                    </button>
+                </div>
+            </header>
+
+            <!-- 内容区域 -->
+            <div class="content">
+                <!-- 仪表板 -->
+                <section id="dashboard-section" class="section active fade-in">
+                    <h2><i class="fas fa-chart-line"></i> 数据总览</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card hover-lift">
+                            <i class="fas fa-tags"></i>
+                            <div class="stat-info">
+                                <h3 id="categories-count">0</h3>
+                                <p>分类总数</p>
+                            </div>
+                        </div>
+                        <div class="stat-card hover-lift">
+                            <i class="fas fa-box"></i>
+                            <div class="stat-info">
+                                <h3 id="products-count">0</h3>
+                                <p>产品总数</p>
+                            </div>
+                        </div>
+                        <div class="stat-card hover-lift">
+                            <i class="fas fa-eye"></i>
+                            <div class="stat-info">
+                                <h3 id="active-products-count">0</h3>
+                                <p>上架产品</p>
+                            </div>
+                        </div>
+                        <div class="stat-card hover-lift">
+                            <i class="fas fa-boxes"></i>
+                            <div class="stat-info">
+                                <h3 id="total-stock">0</h3>
+                                <p>库存总量</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 分类管理 -->
+                <section id="categories-section" class="section">
+                    <div class="section-header">
+                        <h2>分类管理</h2>
+                        <button class="btn btn-primary" onclick="showCategoryModal()">
+                            <i class="fas fa-plus"></i> 新增分类
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table id="categories-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>名称</th>
+                                    <th>英文名称</th>
+                                    <th>描述</th>
+                                    <th>排序</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- 分类数据将通过JavaScript动态加载 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- 产品管理 -->
+                <section id="products-section" class="section">
+                    <div class="section-header">
+                        <h2>产品管理</h2>
+                        <button class="btn btn-primary" onclick="showProductModal()">
+                            <i class="fas fa-plus"></i> 新增产品
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table id="products-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>图片</th>
+                                    <th>名称</th>
+                                    <th>SKU</th>
+                                    <th>分类</th>
+                                    <th>价格</th>
+                                    <th>库存</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- 产品数据将通过JavaScript动态加载 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- 文件上传 -->
+                <section id="uploads-section" class="section">
+                    <h2>文件上传</h2>
+                    <div class="upload-area">
+                        <div class="upload-box" id="upload-box">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>拖拽文件到此处或点击上传</p>
+                            <input type="file" id="file-input" multiple accept="image/*" hidden>
+                            <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">
+                                选择文件
+                            </button>
+                        </div>
+                        <div class="upload-progress" id="upload-progress" style="display: none;">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progress-fill"></div>
+                            </div>
+                            <p id="upload-status">上传中...</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 特色产品管理 -->
+                <section id="featured-products-section" class="section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-star"></i> 特色产品管理</h2>
+                        <button class="btn btn-secondary" onclick="refreshFeaturedProducts()">
+                            <i class="fas fa-sync-alt"></i> 刷新
+                        </button>
+                    </div>
+                    
+                    <div class="featured-products-content">
+                        <div class="featured-info">
+                            <div class="info-card">
+                                <h3>特色产品展示说明</h3>
+                                <ul>
+                                    <li>首页将展示6个特色产品位置</li>
+                                    <li>每个位置可以设置一个产品</li>
+                                    <li>可以随时更换或移除产品</li>
+                                    <li>设置后将立即在前端展示</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="positions-grid-admin" id="featuredPositionsGrid">
+                            <!-- 特色产品位置将通过JavaScript动态生成 -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 背景图管理 -->
+                <section id="background-images-section" class="section">
+                    <h2>
+                        <i class="fas fa-image"></i> 背景图管理
+                        <button class="btn btn-primary" onclick="showBackgroundImageModal()">
+                            <i class="fas fa-plus"></i> 新增背景图
+                        </button>
+                    </h2>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>预览</th>
+                                    <th>标题</th>
+                                    <th>副标题</th>
+                                    <th>按钮文本</th>
+                                    <th>排序</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="background-images-table">
+                                <!-- 背景图数据将通过JavaScript动态加载 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- 系统设置 -->
+                <section id="settings-section" class="section">
+                    <h2>系统设置</h2>
+                    <div class="settings-grid">
+                        <div class="setting-card">
+                            <h3>管理员信息</h3>
+                            <div class="admin-info">
+                                <p><strong>用户名：</strong><span id="current-username"></span></p>
+                                <p><strong>邮箱：</strong><span id="current-email"></span></p>
+                                <p><strong>最后登录：</strong><span id="last-login"></span></p>
+                            </div>
+                        </div>
+                        <div class="setting-card">
+                            <h3>系统信息</h3>
+                            <div class="system-info">
+                                <p><strong>API版本：</strong>1.0.0</p>
+                                <p><strong>数据库：</strong>MySQL</p>
+                                <p><strong>系统状态：</strong><span class="status-healthy">正常</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- 分类模态框 -->
+    <div id="category-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="category-modal-title">新增分类</h3>
+                <span class="close" onclick="closeCategoryModal()">&times;</span>
+            </div>
+            <form id="category-form">
+                <div class="form-group">
+                    <label>名称 *</label>
+                    <input type="text" id="category-name" required>
+                </div>
+                <div class="form-group">
+                    <label>英文名称</label>
+                    <input type="text" id="category-name-en">
+                </div>
+                <div class="form-group">
+                    <label>描述</label>
+                    <textarea id="category-description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>英文描述</label>
+                    <textarea id="category-description-en"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>分类图标URL</label>
+                    <input type="url" id="category-icon-url" placeholder="请输入图标的URL链接" onchange="previewCategoryIconFromUrl(event)">
+                    <div class="icon-preview" id="category-icon-preview" style="margin-top: 10px; display: none;">
+                        <img id="category-icon-img" src="" alt="图标预览" style="max-width: 100px; max-height: 100px; border: 1px solid #ddd; border-radius: 4px;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>排序</label>
+                    <input type="number" id="category-sort-order" value="1">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="category-is-active" checked> 启用
+                    </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeCategoryModal()">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 产品模态框 -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 id="product-modal-title">新增产品</h3>
+                <span class="close" onclick="closeProductModal()">&times;</span>
+            </div>
+            <form id="product-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>产品名称 *</label>
+                        <input type="text" id="product-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>英文名称</label>
+                        <input type="text" id="product-name-en">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>SKU *</label>
+                        <input type="text" id="product-sku" required>
+                    </div>
+                    <div class="form-group">
+                        <label>分类 *</label>
+                        <select id="product-category" required>
+                            <option value="">请选择分类</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>描述</label>
+                    <textarea id="product-description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>英文描述</label>
+                    <textarea id="product-description-en"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>价格 *</label>
+                        <input type="number" id="product-price" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>库存数量</label>
+                        <input type="number" id="product-stock">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>产品图片</label>
+                    <input type="text" id="product-image-url" placeholder="图片URL">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="product-is-active" checked> 上架销售
+                    </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeProductModal()">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 背景图模态框 -->
+    <div id="background-image-modal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 id="background-image-modal-title">新增背景图</h3>
+                <span class="close" onclick="closeBackgroundImageModal()">&times;</span>
+            </div>
+            <form id="background-image-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>中文标题 *</label>
+                        <input type="text" id="bg-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label>英文标题</label>
+                        <input type="text" id="bg-title-en">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>中文副标题</label>
+                        <input type="text" id="bg-subtitle">
+                    </div>
+                    <div class="form-group">
+                        <label>英文副标题</label>
+                        <input type="text" id="bg-subtitle-en">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>中文按钮文本</label>
+                        <input type="text" id="bg-button-text">
+                    </div>
+                    <div class="form-group">
+                        <label>英文按钮文本</label>
+                        <input type="text" id="bg-button-text-en">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>按钮链接</label>
+                        <input type="text" id="bg-button-link" placeholder="例如：#products">
+                    </div>
+                    <div class="form-group">
+                        <label>排序</label>
+                        <input type="number" id="bg-sort-order" value="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>背景图片 *</label>
+                    <div class="image-upload-area">
+                        <input type="text" id="bg-image-url" placeholder="图片URL" required>
+                        <button type="button" class="btn btn-secondary" onclick="openImageSelector('bg-image-url')">
+                            <i class="fas fa-image"></i> 选择图片
+                        </button>
+                    </div>
+                    <div class="image-preview" id="bg-image-preview"></div>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="bg-is-active" checked> 启用
+                    </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeBackgroundImageModal()">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 加载指示器 -->
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>加载中...</p>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/api.js?v=1756732380"></script>
+    <script src="js/admin.js?v=1756732380"></script>
+    <script src="js/admin-enhancements.js?v=1756732380"></script>
+</body>
+</html>

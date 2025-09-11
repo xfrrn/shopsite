@@ -1,0 +1,54 @@
+/* 性能优化CSS补丁 */
+
+/* 减少重绘和回流 */
+* {
+  box-sizing: border-box;
+}
+
+/* 优化滚动性能 */
+html {
+  scroll-behavior: smooth;
+}
+
+/* 图片懒加载样式 */
+img.lazy-loading {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+img.lazy-loaded {
+  opacity: 1;
+}
+
+/* 骨架屏样式 */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* 提高按钮点击响应性 */
+button, .btn {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 优化表格渲染 */
+table {
+  table-layout: fixed;
+}
+
+/* 减少动画重绘 */
+.smooth-transition {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+}

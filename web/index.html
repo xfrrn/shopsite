@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>产品展示网站</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    
+    <!-- 预加载关键资源 -->
+    <link rel="preload" href="css/style.css" as="style">
+    <link rel="preload" href="css/fontawesome.min.css" as="style">
+    <link rel="preload" href="js/api.js" as="script">
+    <link rel="preload" href="js/main.js" as="script">
+    
+    <!-- 样式表 -->
+    <link rel="stylesheet" href="css/fontawesome.min.css">
+    <link rel="stylesheet" href="css/fontawesome-fix.css">
+    <link rel="stylesheet" href="css/performance.css">
+    <link rel="stylesheet" href="css/featured-products.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- 强制修复样式 - 必须在最后加载 -->
+    <link rel="stylesheet" href="css/force-fix.css">
+    
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>产品展示</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#home" class="nav-link">首页</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#categories" class="nav-link">分类</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#products" class="nav-link">产品</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#about" class="nav-link">关于</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main class="main-content">
+        <!-- 页面装饰 -->
+        <div class="page-decoration"></div>
+        
+        
+        <!-- 首页背景图轮播 -->
+        <section id="home" class="hero-section">
+            <!-- 轮播容器 -->
+            <div class="hero-carousel" id="hero-carousel">
+                <!-- 轮播图片将通过JavaScript动态加载 -->
+            </div>
+            
+            <!-- 轮播内容 -->
+            <div class="hero-content" id="hero-content">
+                <h1 id="hero-title">欢迎来到我们的产品展示</h1>
+                <p id="hero-subtitle">发现优质产品，体验卓越品质</p>
+                <a href="#products" id="hero-button" class="cta-button">
+                    浏览产品
+                </a>
+            </div>
+            
+            <!-- 轮播指示器 -->
+            <div class="hero-indicators" id="hero-indicators">
+                <!-- 指示器将通过JavaScript动态生成 -->
+            </div>
+            
+            <!-- 轮播箭头 -->
+            <button class="hero-arrow prev" id="hero-prev" aria-label="上一张">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="hero-arrow next" id="hero-next" aria-label="下一张">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </section>
+
+        <!-- 分类展示 -->
+        <section id="categories" class="categories-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">产品分类</h2>
+                    <button class="view-all-btn" onclick="scrollToSection('products')">
+                        <span>查看所有产品</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="categories-grid" id="categories-grid">
+                    <!-- 分类卡片将通过JavaScript动态加载 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 特色产品展示 -->
+        <div id="featured-products">
+            <!-- 特色产品将通过JavaScript动态加载 -->
+        </div>
+
+        <!-- 产品展示 -->
+        <section id="products" class="products-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">热门产品</h2>
+                    <div class="section-controls">
+                        <button class="view-all-btn" onclick="window.location.reload()">
+                            <i class="fas fa-sync-alt"></i>
+                            <span>刷新产品</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 搜索和筛选 -->
+                <div class="filters">
+                    <div class="search-box">
+                        <input type="text" id="search-input" placeholder="搜索产品..." />
+                        <button id="search-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    <div class="filter-controls">
+                        <select id="category-filter">
+                            <option value="">所有分类</option>
+                        </select>
+                        <select id="sort-filter">
+                            <option value="created_at" data-lang-key="sort-newest">最新</option>
+                            <option value="price_asc" data-lang-key="sort-price-asc">价格：低到高</option>
+                            <option value="price_desc" data-lang-key="sort-price-desc">价格：高到低</option>
+                            <option value="name" data-lang-key="sort-name">名称</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 产品网格 -->
+                <div class="products-grid" id="products-grid">
+                    <!-- 产品卡片将通过JavaScript动态加载 -->
+                </div>
+
+                <!-- 分页 -->
+                <div class="pagination" id="pagination">
+                    <!-- 分页按钮将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 关于我们 -->
+        <section id="about" class="about-section">
+            <div class="container">
+                <h2 class="section-title">关于我们</h2>
+                <div class="about-content">
+                    <p>我们致力于为客户提供高质量的产品和优质的服务体验。</p>
+                    <p>通过持续的创新和改进，我们不断满足客户的需求，创造更大的价值。</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 产品详情模态框 -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="product-details">
+                <!-- 产品详情将通过JavaScript动态加载 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 返回顶部按钮 -->
+    <button id="back-to-top" class="back-to-top" title="返回顶部">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-column">
+                    <h4>关于我们</h4>
+                    <p>我们致力于为客户提供高质量的产品和优质的服务体验，通过持续的创新和改进，我们不断满足客户的需求。</p>
+                </div>
+                <div class="footer-column">
+                    <h4>快速链接</h4>
+                    <ul>
+                        <li><a href="#home">首页</a></li>
+                        <li><a href="#categories">分类</a></li>
+                        <li><a href="#products">产品</a></li>
+                        <li><a href="/admin.html">管理员后台</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>联系我们</h4>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> info@example.com</li>
+                        <li><i class="fas fa-phone"></i> +86 123 4567 8900</li>
+                        <li><i class="fas fa-map-marker-alt"></i> 中国，上海市</li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>关注我们</h4>
+                    <div class="footer-socials">
+                        <a href="#" aria-label="WeChat"><i class="fab fa-weixin"></i></a>
+                        <a href="#" aria-label="Weibo"><i class="fab fa-weibo"></i></a>
+                        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 产品展示网站. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 加载指示器 -->
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>加载中...</p>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/force-fix.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/hero-carousel.js"></script>
+    <script src="js/featured-products.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

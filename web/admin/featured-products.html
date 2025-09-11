@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>特色产品管理 - 管理员后台</title>
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/fontawesome.min.css">
+    <link rel="stylesheet" href="../css/featured-products-admin.css">
+</head>
+<body class="admin-body">
+    <!-- 侧边栏 -->
+    <nav class="admin-sidebar">
+        <div class="admin-logo">
+            <h2>管理后台</h2>
+        </div>
+        <ul class="admin-menu">
+            <li><a href="index.html">仪表板</a></li>
+            <li><a href="categories.html">分类管理</a></li>
+            <li><a href="products.html">产品管理</a></li>
+            <li><a href="featured-products.html" class="active">特色产品</a></li>
+            <li><a href="background-images.html">背景图片</a></li>
+            <li><a href="../index.html">返回首页</a></li>
+        </ul>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="admin-main">
+        <!-- 头部 -->
+        <header class="admin-header">
+            <div class="admin-header-content">
+                <h1>特色产品管理</h1>
+                <div class="admin-user">
+                    <span id="admin-username">管理员</span>
+                    <button class="btn btn-secondary" onclick="logout()">退出登录</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 内容区域 -->
+        <div class="admin-content">
+            <!-- 操作按钮 -->
+            <div class="admin-actions">
+                <h2>6个特色产品位置管理</h2>
+                <p class="admin-description">管理首页展示的6个特色产品位置，每个位置可以配置一个产品。</p>
+            </div>
+
+            <!-- 位置状态概览 -->
+            <div class="positions-overview">
+                <div class="overview-header">
+                    <h3>位置状态概览</h3>
+                    <button class="btn btn-success" onclick="refreshPositions()">
+                        <i class="fas fa-sync-alt"></i>
+                        刷新状态
+                    </button>
+                </div>
+                <div class="positions-grid" id="positions-grid">
+                    <!-- 位置状态将通过JavaScript动态加载 -->
+                </div>
+            </div>
+
+            <!-- 特色产品配置表格 -->
+            <div class="admin-table-container">
+                <div class="table-header">
+                    <h3>特色产品配置列表</h3>
+                    <button class="btn btn-primary" onclick="showAddModal()">
+                        <i class="fas fa-plus"></i>
+                        添加特色产品
+                    </button>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="admin-table" id="featured-products-table">
+                        <thead>
+                            <tr>
+                                <th>位置</th>
+                                <th>产品信息</th>
+                                <th>产品图片</th>
+                                <th>价格</th>
+                                <th>状态</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="featured-products-tbody">
+                            <!-- 数据将通过JavaScript动态加载 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 产品选择模态框 -->
+            <div class="modal" id="add-featured-modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="modal-title">添加特色产品</h3>
+                        <span class="close" onclick="closeModal()">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <form id="featured-product-form">
+                            <input type="hidden" id="featured-id">
+                            
+                            <div class="form-group">
+                                <label for="position-select">位置 (1-6):</label>
+                                <select id="position-select" required>
+                                    <option value="">请选择位置</option>
+                                    <option value="1">位置 1</option>
+                                    <option value="2">位置 2</option>
+                                    <option value="3">位置 3</option>
+                                    <option value="4">位置 4</option>
+                                    <option value="5">位置 5</option>
+                                    <option value="6">位置 6</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="product-search">产品搜索:</label>
+                                <input type="text" id="product-search" placeholder="输入产品名称搜索..." onkeyup="searchProducts()">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>选择产品:</label>
+                                <div class="products-list" id="products-list">
+                                    <!-- 产品列表将通过JavaScript动态加载 -->
+                                </div>
+                            </div>
+                            
+                            <input type="hidden" id="selected-product-id">
+                            
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="is-active" checked>
+                                    激活状态
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+                        <button type="button" class="btn btn-primary" onclick="saveFeaturedProduct()">保存</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 确认删除模态框 -->
+            <div class="modal" id="delete-confirm-modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>确认删除</h3>
+                        <span class="close" onclick="closeDeleteModal()">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <p>确定要删除这个特色产品配置吗？此操作不可撤销。</p>
+                        <div class="delete-info" id="delete-info">
+                            <!-- 删除信息将通过JavaScript显示 -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeDeleteModal()">取消</button>
+                        <button type="button" class="btn btn-danger" onclick="confirmDelete()">确认删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading 指示器 -->
+    <div class="loading" id="loading" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Toast 通知 -->
+    <div class="toast" id="toast"></div>
+
+    <!-- JavaScript -->
+    <script src="../js/api.js"></script>
+    <script src="../js/admin-auth.js"></script>
+    <script src="../js/admin-featured-products.js"></script>
+</body>
+</html>
