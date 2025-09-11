@@ -1221,7 +1221,7 @@ function renderFilledPositionAdmin(positionData, position) {
         `;
     }
 
-    const imageUrl = product.image_url || product.images?.[0] || '/web/images/placeholder-product.jpg';
+    const imageUrl = product.image_url || product.images?.[0] || 'https://via.placeholder.com/300x300/f8f9fa/6c757d?text=Product';
     const fullImageUrl = imageUrl.startsWith('http') ? imageUrl : 
                          imageUrl.startsWith('/uploads') ? imageUrl : 
                          `/uploads/${imageUrl}`;
@@ -1235,7 +1235,7 @@ function renderFilledPositionAdmin(positionData, position) {
             <img src="${fullImageUrl}" 
                  alt="${product.name}" 
                  class="position-product-image-admin"
-                 onerror="this.src='/web/images/placeholder-product.jpg'">
+                 onerror="this.src='https://via.placeholder.com/300x300/f8f9fa/6c757d?text=Product'">
             
             <div class="position-product-info-admin">
                 <div class="position-product-name-admin" title="${product.name}">

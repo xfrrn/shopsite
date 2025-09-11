@@ -29,16 +29,30 @@ class FeaturedProducts {
      */
     async loadFeaturedProducts() {
         try {
+            console.log('🔄 开始加载特色产品数据...');
             const response = await fetch('/api/featured-products/');
+            console.log('📡 API响应状态:', response.status);
+            
             if (response.ok) {
                 this.featuredProducts = await response.json();
+                console.log('📦 获取到特色产品数据:', this.featuredProducts);
+                console.log('📊 特色产品数量:', this.featuredProducts.length);
+                
+                // 检查每个位置的产品
+                for (let i = 0; i < this.featuredProducts.length; i++) {
+                    const item = this.featuredProducts[i];
+                    console.log(`位置 ${item.position}:`, item.product ? item.product.name : '空');
+                }
+                
                 this.renderFeaturedProducts();
             } else {
-                console.error('加载特色产品失败:', response.status);
+                console.error('❌ 加载特色产品失败:', response.status);
+                const errorText = await response.text();
+                console.error('错误详情:', errorText);
                 this.renderEmptyState();
             }
         } catch (error) {
-            console.error('加载特色产品出错:', error);
+            console.error('❌ 加载特色产品出错:', error);
             this.renderEmptyState();
         }
     }
@@ -47,42 +61,67 @@ class FeaturedProducts {
      * 渲染特色产品
      */
     renderFeaturedProducts() {
+        console.log('🎨 开始渲染特色产品...');
+        
         const container = document.getElementById('featured-products');
-        if (!container) return;
+        if (!container) {
+            console.error('❌ 找不到特色产品容器元素');
+            return;
+        }
 
-        // 如果没有特色产品，显示空状态
         if (!this.featuredProducts || this.featuredProducts.length === 0) {
+            console.log('📭 没有特色产品数据，显示空状态');
             this.renderEmptyState();
             return;
         }
 
-        // 构建特色产品HTML
-        const html = `
+        // 过滤出有产品的位置
+        const validProducts = this.featuredProducts.filter(item => item.product !== null);
+        console.log('✅ 有效的特色产品数量:', validProducts.length);
+
+        if (validProducts.length === 0) {
+            console.log('📭 没有有效的特色产品，显示空状态');
+            this.renderEmptyState();
+            return;
+        }
+
+        let html = `
             <section class="featured-products-section">
                 <div class="container">
-                    <h2 class="section-title" data-translate="featured_products">${this.getTranslation('特色产品')}</h2>
-                    <div class="featured-products-grid">
-                        ${this.renderProductCards()}
+                    <div class="section-header">
+                        <h2 class="section-title">特色产品</h2>
+                        <p class="section-subtitle">精选优质商品，为您推荐</p>
+                    </div>
+                    <div class="products-grid">
+        `;
+
+        validProducts.forEach((positionData, index) => {
+            console.log(`🔨 渲染位置 ${positionData.position} 的产品:`, positionData.product.name);
+            html += this.renderSingleProductCard(positionData.product, positionData.position);
+        });
+
+        html += `
                     </div>
                 </div>
             </section>
         `;
-
+        
         container.innerHTML = html;
+        console.log('✨ 特色产品渲染完成');
     }
 
     /**
-     * 渲染产品卡片
+     * 渲染产品卡片（多个）
      */
     renderProductCards() {
         let cardsHtml = '';
         
         // 生成6个位置的产品卡片
         for (let position = 1; position <= 6; position++) {
-            const product = this.featuredProducts.find(p => p.position === position);
+            const positionData = this.featuredProducts.find(p => p.position === position);
             
-            if (product) {
-                cardsHtml += this.renderProductCard(product);
+            if (positionData && positionData.product) {
+                cardsHtml += this.renderSingleProductCard(positionData.product, position);
             } else {
                 cardsHtml += this.renderEmptyCard(position);
             }
@@ -94,54 +133,41 @@ class FeaturedProducts {
     /**
      * 渲染单个产品卡片
      */
-    renderProductCard(product) {
-        const productName = this.getProductText(product, 'name');
-        const productDescription = this.getProductText(product, 'description');
-        const categoryName = product.category ? this.getCategoryText(product.category, 'name') : '';
+    renderSingleProductCard(product, position) {
+        const productName = product.name || '未知产品';
+        const productPrice = product.price || 0;
+        const productDescription = product.description || '暂无描述';
         
-        // 处理价格显示
-        const priceDisplay = product.original_price && product.original_price > product.price ? 
-            `<span class="price-original">¥${product.original_price}</span>
-             <span class="price-current">¥${product.price}</span>` :
-            `<span class="price-current">¥${product.price}</span>`;
-        
-        // 处理图片显示
-        const imageUrl = product.image_url || '/web/images/default-product.jpg';
+        // 简化图片处理 - 如果没有图片就显示文字
+        const imageUrl = product.image_url;
         
         return `
-            <div class="featured-product-card" data-product-id="${product.id}">
+            <div class="product-card animate-slide-up" 
+                 onclick="showProductDetails(${product.id})" 
+                 style="cursor: pointer;"
+                 title="点击查看 ${productName} 详情">
                 <div class="product-image">
-                    <img src="${imageUrl}" alt="${productName}" onerror="this.src='/web/images/default-product.jpg'">
-                    ${product.original_price && product.original_price > product.price ? 
-                        `<div class="discount-badge">${Math.round((1 - product.price / product.original_price) * 100)}% OFF</div>` : 
-                        ''}
-                    ${product.is_featured ? '<div class="featured-badge" data-translate="featured">精选</div>' : ''}
+                    ${imageUrl ? 
+                        `<img src="${imageUrl}" alt="${productName}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">` : 
+                        `<div style="width: 100%; height: 200px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6c757d; font-size: 14px;">
+                            <i class="fas fa-image" style="font-size: 24px;"></i>
+                            <span style="margin-left: 8px;">暂无图片</span>
+                        </div>`
+                    }
+                    <div class="product-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; border-radius: 8px;">
+                        <span style="opacity: 0; transition: opacity 0.3s ease;">点击查看详情</span>
+                    </div>
                 </div>
                 <div class="product-info">
-                    <h3 class="product-name" data-translate="product_name_${product.id}">${productName}</h3>
-                    <p class="product-category" data-translate="category_name_${product.category_id}">${categoryName}</p>
-                    <p class="product-description" data-translate="product_desc_${product.id}">${productDescription}</p>
-                    <div class="product-meta">
-                        <div class="product-rating">
-                            ${this.renderStars(product.rating || 0)}
-                            <span class="rating-text">(${product.rating || 0})</span>
-                        </div>
-                        <div class="product-stats">
-                            <span class="sales-count" data-translate="sales_count">销量: ${product.sales_count || 0}</span>
-                            <span class="view-count" data-translate="view_count">浏览: ${product.view_count || 0}</span>
-                        </div>
-                    </div>
-                    <div class="product-price">
-                        ${priceDisplay}
-                    </div>
-                    <div class="product-actions">
-                        <button class="btn btn-primary view-details" data-product-id="${product.id}" data-translate="view_details">
-                            查看详情
-                        </button>
-                        <button class="btn btn-secondary add-to-cart" data-product-id="${product.id}" data-translate="add_to_cart">
-                            加入购物车
-                        </button>
-                    </div>
+                    <h3 class="product-name">${productName}</h3>
+                    <p class="product-description">${productDescription}</p>
+                    <div class="product-price">¥${productPrice}</div>
+                    <button class="product-btn modern-btn" onclick="event.stopPropagation(); showProductDetails(${product.id})">
+                        <span class="btn-text">查看详情</span>
+                        <span class="btn-icon">
+                            <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </button>
                 </div>
             </div>
         `;
@@ -236,6 +262,17 @@ class FeaturedProducts {
                 this.addToCart(productId);
             }
         });
+
+        // 键盘事件支持
+        document.addEventListener('keydown', (event) => {
+            // ESC键关闭模态框
+            if (event.key === 'Escape') {
+                const modal = document.getElementById('product-modal');
+                if (modal && modal.style.display === 'block') {
+                    closeModal();
+                }
+            }
+        });
     }
 
     /**
@@ -280,3 +317,34 @@ class FeaturedProducts {
 
 // 导出类
 window.FeaturedProducts = FeaturedProducts;
+
+/**
+ * 处理产品按钮点击
+ */
+window.handleProductClick = function(button, productId) {
+    // 添加加载状态
+    button.classList.add('loading');
+    const icon = button.querySelector('.btn-icon i');
+    const originalIcon = icon.className;
+    icon.className = 'fas fa-spinner';
+    
+    // 立即显示产品详情，不需要延迟
+    try {
+        showProductDetails(productId);
+        
+        // 移除加载状态
+        button.classList.remove('loading');
+        icon.className = originalIcon;
+        
+        // 短暂显示成功状态
+        button.classList.add('success');
+        setTimeout(() => {
+            button.classList.remove('success');
+        }, 800);
+    } catch (error) {
+        // 如果出错，恢复按钮状态
+        button.classList.remove('loading');
+        icon.className = originalIcon;
+        console.error('显示产品详情失败:', error);
+    }
+};

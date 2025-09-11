@@ -137,7 +137,7 @@ function renderPositionsOverview(positions) {
                     <div class="position-product-info">
                         <div class="position-product-name">${position.product_name}</div>
                         ${position.product_image ? `
-                            <img src="${position.product_image}" alt="${position.product_name}" class="position-product-image" onerror="this.src='/web/images/default-product.jpg'">
+                            <img src="${position.product_image}" alt="${position.product_name}" class="position-product-image" onerror="this.src='https://via.placeholder.com/300x300/f8f9fa/6c757d?text=Product'">
                         ` : ''}
                     </div>
                     <div class="position-actions">
@@ -195,9 +195,9 @@ function renderFeaturedProductsTable() {
                 </td>
                 <td>
                     <div class="product-info-cell">
-                        <img src="${product.image_url || '/web/images/default-product.jpg'}" 
+                        <img src="${product.image_url || 'https://via.placeholder.com/300x300/f8f9fa/6c757d?text=Product'}" 
                              alt="${product.name || '未知产品'}" 
-                             onerror="this.src='/web/images/default-product.jpg'">
+                             onerror="this.src='https://via.placeholder.com/300x300/f8f9fa/6c757d?text=Product'">
                         <div class="product-details">
                             <h4>${product.name || '未知产品'}</h4>
                             <p>${category.name || '无分类'} • SKU: ${product.sku || 'N/A'}</p>
@@ -205,10 +205,10 @@ function renderFeaturedProductsTable() {
                     </div>
                 </td>
                 <td>
-                    <img src="${product.image_url || '/web/images/default-product.jpg'}" 
+                    <img src="${product.image_url || 'https://via.placeholder.com/300x300/f8f9fa/6c757d?text=Product'}" 
                          alt="${product.name || '未知产品'}" 
                          style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover;"
-                         onerror="this.src='/web/images/default-product.jpg'">
+                         onerror="this.src='https://via.placeholder.com/300x300/f8f9fa/6c757d?text=Product'">
                 </td>
                 <td>
                     <div class="price-display">¥${product.price || '0.00'}</div>
@@ -312,9 +312,9 @@ function renderProductsList() {
     
     const html = filteredProducts.map(product => `
         <div class="product-item" data-product-id="${product.id}" onclick="selectProduct(${product.id})">
-            <img src="${product.image_url || '/web/images/default-product.jpg'}" 
+            <img src="${product.image_url || 'https://via.placeholder.com/300x300/f8f9fa/6c757d?text=Product'}" 
                  alt="${product.name}" 
-                 onerror="this.src='/web/images/default-product.jpg'">
+                 onerror="this.src='https://via.placeholder.com/300x300/f8f9fa/6c757d?text=Product'">
             <div class="product-item-info">
                 <h4>${product.name}</h4>
                 <p>${product.description || '无描述'}</p>

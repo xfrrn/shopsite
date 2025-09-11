@@ -48,6 +48,33 @@
 .featured-product-card {
     background: white;
     border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+}
+
+.featured-product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+/* 特色产品卡片内的产品卡片也添加悬停效果 */
+.featured-products-section .product-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+}
+
+.featured-products-section .product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     transition: all 0.3s ease;
@@ -400,4 +427,186 @@
         padding: 10px 16px;
         font-size: 0.85rem;
     }
+    
+    /* 移动端按钮优化 */
+    .featured-products-section .modern-btn {
+        padding: 10px 20px;
+        font-size: 13px;
+        min-width: 120px;
+        border-radius: 20px;
+    }
+    
+    .featured-products-section .modern-btn .btn-icon {
+        font-size: 12px;
+    }
+}
+
+/* 平板端优化 */
+@media (max-width: 768px) and (min-width: 481px) {
+    .featured-products-section .modern-btn {
+        padding: 11px 22px;
+        font-size: 13.5px;
+        min-width: 130px;
+    }
+}
+
+/* 特色产品卡片点击效果 */
+.featured-products-section .product-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.featured-products-section .product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.featured-products-section .product-card:active {
+    transform: translateY(-2px);
+}
+
+/* 产品图片悬停覆盖层 */
+.featured-products-section .product-card:hover .product-overlay {
+    background: rgba(0, 0, 0, 0.6) !important;
+}
+
+.featured-products-section .product-card:hover .product-overlay span {
+    opacity: 1 !important;
+}
+
+/* 产品按钮悬停效果 */
+.featured-products-section .product-btn {
+    transition: all 0.3s ease;
+}
+
+.featured-products-section .product-btn:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+/* 现代化按钮样式 */
+.featured-products-section .modern-btn {
+    position: relative;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 25px;
+    padding: 12px 24px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 140px;
+    backdrop-filter: blur(10px);
+}
+
+.featured-products-section .modern-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.3s;
+}
+
+.featured-products-section .modern-btn:hover::before {
+    left: 100%;
+}
+
+.featured-products-section .modern-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+}
+
+.featured-products-section .modern-btn:active {
+    transform: translateY(0px);
+    box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+    transition: all 0.1s;
+}
+
+.featured-products-section .modern-btn .btn-text {
+    position: relative;
+    z-index: 2;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.featured-products-section .modern-btn .btn-icon {
+    position: relative;
+    z-index: 2;
+    transition: transform 0.2s ease;
+}
+
+.featured-products-section .modern-btn:hover .btn-icon {
+    transform: translateX(2px);
+}
+
+/* 按钮的呼吸光效 */
+.featured-products-section .modern-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.featured-products-section .modern-btn:hover::after {
+    width: 300px;
+    height: 300px;
+}
+
+/* 按钮点击波纹效果 */
+.featured-products-section .modern-btn {
+    overflow: hidden;
+}
+
+.featured-products-section .modern-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+}
+
+/* 按钮加载状态 */
+.featured-products-section .modern-btn.loading {
+    pointer-events: none;
+}
+
+.featured-products-section .modern-btn.loading .btn-text {
+    opacity: 0.7;
+}
+
+.featured-products-section .modern-btn.loading .btn-icon {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* 成功状态 */
+.featured-products-section .modern-btn.success {
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+}
+
+.featured-products-section .modern-btn.success .btn-icon::before {
+    content: '✓';
+    font-family: Arial, sans-serif;
+    font-weight: bold;
 }
