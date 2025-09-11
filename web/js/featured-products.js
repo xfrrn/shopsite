@@ -29,7 +29,7 @@ class FeaturedProducts {
      */
     async loadFeaturedProducts() {
         try {
-            const response = await fetch('/api/featured-products');
+            const response = await fetch('/api/featured-products/');
             if (response.ok) {
                 this.featuredProducts = await response.json();
                 this.renderFeaturedProducts();

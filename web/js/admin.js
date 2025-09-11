@@ -1124,10 +1124,10 @@ async function loadFeaturedProductsData() {
             fetch('/api/admin/featured-products/positions', {
                 headers: { 'Authorization': `Bearer ${api.token}` }
             }),
-            fetch('/api/admin/products', {
+            fetch('/api/admin/products/', {
                 headers: { 'Authorization': `Bearer ${api.token}` }
             }),
-            fetch('/api/admin/categories', {
+            fetch('/api/admin/categories/', {
                 headers: { 'Authorization': `Bearer ${api.token}` }
             })
         ]);

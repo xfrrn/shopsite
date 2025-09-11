@@ -53,7 +53,7 @@ async function loadFeaturedProducts() {
 async function loadProducts() {
     try {
         // 先尝试管理员API，如果失败则使用公共API
-        let response = await fetch('/api/admin/products', {
+        let response = await fetch('/api/admin/products/', {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('admin_token')}`
             }
@@ -62,7 +62,7 @@ async function loadProducts() {
         // 如果管理员API失败，使用公共产品API
         if (!response.ok) {
             console.log('Admin products API failed, trying public API...');
-            response = await fetch('/api/products?size=100');
+            response = await fetch('/api/products/');
         }
         
         console.log('Products API response status:', response.status);
