@@ -60,7 +60,27 @@ class HeroCarousel {
                 {
                     id: 'default-1',
                     title: '欢迎来到我们的产品展示',
-                    description: '发现优质产品，体验卓越品质',
+                    subtitle: '发现优质产品，体验卓越品质',
+                    button_text: '浏览产品',
+                    button_link: '#products',
+                    image_url: null,
+                    is_active: true
+                },
+                {
+                    id: 'default-2',
+                    title: '精选优质商品',
+                    subtitle: '为您提供最好的购物体验',
+                    button_text: '立即购买',
+                    button_link: '#products',
+                    image_url: null,
+                    is_active: true
+                },
+                {
+                    id: 'default-3',
+                    title: '品质保证',
+                    subtitle: '严格品控，只为您的满意',
+                    button_text: '了解更多',
+                    button_link: '#products',
                     image_url: null,
                     is_active: true
                 }
@@ -72,6 +92,7 @@ class HeroCarousel {
         this.slides.forEach((slide, index) => {
             const slideElement = document.createElement('div');
             slideElement.className = `hero-slide ${index === 0 ? 'active' : ''}`;
+            slideElement.setAttribute('data-slide-index', index);
             
             if (slide.image_url && slide.image_url.trim()) {
                 console.log('设置背景图片:', slide.image_url);
@@ -82,7 +103,7 @@ class HeroCarousel {
             } else {
                 // 使用CSS渐变作为默认背景
                 console.log('使用默认渐变背景');
-                slideElement.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)';
+                slideElement.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%)';
             }
             
             // 强制设置样式
@@ -129,32 +150,56 @@ class HeroCarousel {
         const prevBtn = document.getElementById('hero-prev');
         const nextBtn = document.getElementById('hero-next');
 
+        console.log('绑定轮播事件，幻灯片数量:', this.slides.length);
+        console.log('上一张按钮:', prevBtn ? '找到' : '未找到');
+        console.log('下一张按钮:', nextBtn ? '找到' : '未找到');
+
         if (prevBtn && this.slides.length > 1) {
-            prevBtn.addEventListener('click', () => this.prevSlide());
+            prevBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('点击上一张按钮');
+                this.prevSlide();
+            });
             prevBtn.style.display = 'flex';
+            console.log('上一张按钮已绑定事件并显示');
         } else if (prevBtn) {
             prevBtn.style.display = 'none';
+            console.log('上一张按钮已隐藏');
         }
 
         if (nextBtn && this.slides.length > 1) {
-            nextBtn.addEventListener('click', () => this.nextSlide());
+            nextBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('点击下一张按钮');
+                this.nextSlide();
+            });
             nextBtn.style.display = 'flex';
+            console.log('下一张按钮已绑定事件并显示');
         } else if (nextBtn) {
             nextBtn.style.display = 'none';
+            console.log('下一张按钮已隐藏');
         }
 
         // 鼠标悬停时暂停自动播放
         const heroSection = document.querySelector('.hero-section');
         if (heroSection) {
-            heroSection.addEventListener('mouseenter', () => this.stopAutoplay());
-            heroSection.addEventListener('mouseleave', () => this.startAutoplay());
+            heroSection.addEventListener('mouseenter', () => {
+                console.log('鼠标进入轮播区域，暂停自动播放');
+                this.stopAutoplay();
+            });
+            heroSection.addEventListener('mouseleave', () => {
+                console.log('鼠标离开轮播区域，恢复自动播放');
+                this.startAutoplay();
+            });
         }
 
         // 键盘导航
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowLeft') {
+                console.log('键盘左箭头');
                 this.prevSlide();
             } else if (e.key === 'ArrowRight') {
+                console.log('键盘右箭头');
                 this.nextSlide();
             }
         });
@@ -166,20 +211,39 @@ class HeroCarousel {
         }
 
         this.isTransitioning = true;
+        console.log(`切换到第 ${index + 1} 张幻灯片`);
         
         // 更新轮播图
+        const allSlides = document.querySelectorAll('.hero-slide');
         const currentSlide = document.querySelector('.hero-slide.active');
-        const nextSlide = document.querySelector(`[data-slide-index="${index}"]`);
+        const nextSlide = document.querySelector(`.hero-slide[data-slide-index="${index}"]`);
         
-        if (currentSlide) currentSlide.classList.remove('active');
-        if (nextSlide) nextSlide.classList.add('active');
+        // 隐藏所有幻灯片
+        allSlides.forEach(slide => {
+            slide.classList.remove('active');
+            slide.style.opacity = '0';
+        });
+        
+        // 显示目标幻灯片
+        if (nextSlide) {
+            nextSlide.classList.add('active');
+            nextSlide.style.opacity = '1';
+        }
 
         // 更新指示器
+        const allIndicators = document.querySelectorAll('.hero-indicator');
         const currentIndicator = document.querySelector('.hero-indicator.active');
         const nextIndicator = document.querySelector(`.hero-indicator[data-slide-index="${index}"]`);
         
-        if (currentIndicator) currentIndicator.classList.remove('active');
-        if (nextIndicator) nextIndicator.classList.add('active');
+        // 移除所有指示器的活动状态
+        allIndicators.forEach(indicator => {
+            indicator.classList.remove('active');
+        });
+        
+        // 激活目标指示器
+        if (nextIndicator) {
+            nextIndicator.classList.add('active');
+        }
 
         this.currentSlideIndex = index;
         this.updateContent();
@@ -191,14 +255,22 @@ class HeroCarousel {
     }
 
     nextSlide() {
-        if (this.slides.length <= 1) return;
+        if (this.slides.length <= 1) {
+            console.log('只有一张或没有幻灯片，无法切换');
+            return;
+        }
         const nextIndex = (this.currentSlideIndex + 1) % this.slides.length;
+        console.log(`下一张: 当前 ${this.currentSlideIndex} -> 下一张 ${nextIndex}`);
         this.goToSlide(nextIndex);
     }
 
     prevSlide() {
-        if (this.slides.length <= 1) return;
+        if (this.slides.length <= 1) {
+            console.log('只有一张或没有幻灯片，无法切换');
+            return;
+        }
         const prevIndex = (this.currentSlideIndex - 1 + this.slides.length) % this.slides.length;
+        console.log(`上一张: 当前 ${this.currentSlideIndex} -> 上一张 ${prevIndex}`);
         this.goToSlide(prevIndex);
     }
 
@@ -230,10 +302,15 @@ class HeroCarousel {
     }
 
     startAutoplay() {
-        if (this.slides.length <= 1) return;
+        if (this.slides.length <= 1) {
+            console.log('只有一张或没有幻灯片，不启动自动播放');
+            return;
+        }
         
+        console.log('启动自动轮播，间隔:', this.slideInterval + 'ms');
         this.stopAutoplay();
         this.intervalId = setInterval(() => {
+            console.log('自动切换到下一张幻灯片');
             this.nextSlide();
         }, this.slideInterval);
     }
