@@ -289,7 +289,35 @@
             bar.style.setProperty('background', '#495057', 'important');
         });
         
+        // 处理公司标志
+        initCompanyLogo();
+        
         console.log('💪 导航栏文字颜色强制设置为深色');
+    }
+    
+    // 初始化公司标志
+    function initCompanyLogo() {
+        const companyLogo = document.getElementById('company-logo');
+        if (companyLogo) {
+            // 如果图片加载失败，显示默认标志
+            companyLogo.onerror = function() {
+                // 创建一个默认的SVG标志
+                this.src = 'data:image/svg+xml;base64,' + btoa(`
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+                        <rect width="40" height="40" rx="8" fill="#495057"/>
+                        <text x="20" y="28" font-family="Arial, sans-serif" font-size="24" font-weight="bold" text-anchor="middle" fill="white">C</text>
+                    </svg>
+                `);
+                console.log('📷 使用默认公司标志');
+            };
+            
+            // 强制设置样式
+            companyLogo.style.setProperty('display', 'block', 'important');
+            companyLogo.style.setProperty('visibility', 'visible', 'important');
+            companyLogo.style.setProperty('opacity', '1', 'important');
+            
+            console.log('🏢 公司标志已初始化');
+        }
     }
     
     // 设置定期检查，确保文字颜色不被覆盖

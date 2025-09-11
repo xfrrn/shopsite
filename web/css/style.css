@@ -75,6 +75,21 @@ body {
     height: 70px !important;
 }
 
+.nav-logo {
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+
+.company-logo {
+    height: 40px !important;
+    width: auto !important;
+    max-width: 40px !important;
+    object-fit: contain !important;
+    transition: all 0.3s ease !important;
+    filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.8)) !important;
+}
+
 .nav-logo h2 {
     color: #343a40 !important;
     font-weight: 700 !important;
@@ -1390,6 +1405,15 @@ body {
 @media (max-width: 768px) {
     .hamburger {
         display: flex;
+    }
+    
+    .company-logo {
+        height: 32px !important;
+        max-width: 32px !important;
+    }
+    
+    .nav-logo h2 {
+        font-size: 1.4rem !important;
     }
     
     .nav-menu {
