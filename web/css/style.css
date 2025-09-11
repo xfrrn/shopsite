@@ -459,8 +459,8 @@ body {
 /* 精选商品区域样式 */
 .featured-products-section {
     padding: 80px 0;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    color: #333333;
     position: relative;
     overflow: hidden;
 }
@@ -482,11 +482,12 @@ body {
 }
 
 .featured-products-section .section-title {
-    color: white;
+    color: #343a40;
     text-align: center;
     margin-bottom: 50px;
     font-size: 2.5rem;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    font-weight: 900;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .featured-products-grid {
@@ -667,7 +668,7 @@ body {
 }
 
 .search-box button {
-    background: #667eea;
+    background: #495057;
     color: white;
     border: none;
     padding: 12px 20px;
@@ -676,7 +677,7 @@ body {
 }
 
 .search-box button:hover {
-    background: #5a67d8;
+    background: #343a40;
 }
 
 .filter-controls {
@@ -696,7 +697,7 @@ body {
 
 .filter-controls select:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #495057;
 }
 
 /* 产品区域样式增强 */
@@ -1013,7 +1014,7 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+    background: linear-gradient(90deg, #495057, #6c757d, #adb5bd, #dee2e6);
 }
 
 .close {
@@ -1157,7 +1158,7 @@ body {
     width: 50px;
     height: 50px;
     border: 5px solid #e2e8f0;
-    border-top: 5px solid #667eea;
+    border-top: 5px solid #6c757d;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -1179,7 +1180,7 @@ body {
 
 /* 导航增强样式 */
 .nav-enhancements {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     padding: 10px 0;
     box-shadow: 0 2px 20px rgba(0,0,0,0.1);
 }
@@ -1222,7 +1223,7 @@ body {
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe);
+    background: linear-gradient(90deg, #495057, #6c757d, #adb5bd, #dee2e6, #e9ecef, #f8f9fa);
     z-index: 1000;
 }
 
@@ -1236,7 +1237,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
     border-radius: 4px;
 }
 
