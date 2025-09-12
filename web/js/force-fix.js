@@ -108,20 +108,14 @@
         const heroContent = document.querySelector('.hero-content');
         
         if (heroSection) {
-            heroSection.style.cssText = `
-                position: relative !important;
-                height: 100vh !important;
-                overflow: hidden !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
-                visibility: visible !important;
-                opacity: 1 !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            `;
-            console.log('✅ Hero区域样式已应用');
+            // 移除所有内联样式，让CSS类控制
+            heroSection.style.cssText = ``;
+            // 初始化时如果在顶部，添加全屏class
+            if (window.scrollY === 0) {
+                heroSection.classList.add('fullscreen');
+                document.body.classList.add('hero-fullscreen');
+            }
+            console.log('✅ Hero区域已初始化');
         }
         
         if (heroCarousel) {

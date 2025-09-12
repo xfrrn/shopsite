@@ -216,14 +216,13 @@ body.has-top-bar.top-bar-hidden .navbar {
     top: 0 !important;
 }
 
-/* 调整主内容区域的padding以适应顶部信息栏 */
+/* 轮播图已固定定位占满屏幕，不需要调整主内容区padding */
 body.has-top-bar .main-content {
-    padding-top: 110px !important; /* 40px (info bar) + 70px (navbar) */
-    transition: padding-top 0.25s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+    padding-top: 0 !important; /* 轮播图占满屏幕，无需padding */
 }
 
 body.has-top-bar.top-bar-hidden .main-content {
-    padding-top: 70px !important; /* 只有 navbar 高度 */
+    padding-top: 0 !important; /* 轮播图占满屏幕，无需padding */
 }
 
 /* 微信二维码模态框 */
@@ -418,14 +417,19 @@ body.has-top-bar.top-bar-hidden .main-content {
 /* 主要内容 */
 .main-content {
     margin-top: 0 !important;
-    padding-top: 70px !important; /* 默认只有导航栏高度 */
+    padding-top: 0 !important; /* 默认无padding，轮播图后直接显示内容 */
     transition: padding-top 0.25s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
 }
 
-/* Hero区域强制样式 */
+/* 全屏模式下的主内容区 */
+body.hero-fullscreen .main-content {
+    padding-top: 0 !important; /* 全屏时保持无padding */
+}
+
+/* Hero区域样式 - 支持动态全屏 */
 .hero-section {
     position: relative !important;
-    height: 100vh !important;
+    height: 60vh !important; /* 默认高度为60vh，避免占用过多空间 */
     overflow: hidden !important;
     display: flex !important;
     align-items: center !important;
@@ -433,6 +437,17 @@ body.has-top-bar.top-bar-hidden .main-content {
     background: var(--light-bg) !important;
     margin: 0 !important;
     padding: 0 !important;
+    transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+/* 全屏模式 - 当在页面顶部时 */
+.hero-section.fullscreen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 100vh !important; /* 全屏时才是100vh */
+    z-index: 1 !important;
 }
 
 .hero-carousel {
@@ -744,16 +759,16 @@ body.has-top-bar.top-bar-hidden .main-content {
     border-radius: 2px;
 }
 
-/* 分类区域样式增强 */
+/* 分类区域样式增强 - 轮播图后的第一个区域 */
 .categories-section {
     padding: 80px 0;
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    margin-top: 0 !important; /* 默认无额外margin */
 }
 
-/* 分类区域样式增强 */
-.categories-section {
-    padding: 80px 0;
-    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+/* 全屏模式下的分类区域 */
+body.hero-fullscreen .categories-section {
+    margin-top: 100vh !important; /* 只有在全屏模式下才添加margin */
 }
 
 /* 精选商品区域样式 */
@@ -1174,6 +1189,7 @@ body.has-top-bar.top-bar-hidden .main-content {
     line-height: 1.5;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;

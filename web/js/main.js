@@ -63,21 +63,15 @@ function forceApplyStyles() {
         initNavbarScrollEffect();
     }
     
-    // 强制显示hero区域
+    // 初始化hero区域
     const heroSection = document.querySelector('.hero-section');
     if (heroSection) {
-        heroSection.style.cssText = `
-            position: relative !important;
-            height: 100vh !important;
-            overflow: hidden !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        `;
-        console.log('Hero区域样式已强制应用');
+        // 默认在顶部时为全屏
+        if (window.scrollY === 0) {
+            heroSection.classList.add('fullscreen');
+            document.body.classList.add('hero-fullscreen');
+        }
+        console.log('Hero区域初始化完成');
     }
     
     // 强制重新计算样式
@@ -631,6 +625,20 @@ function initNavbarScrollEffect() {
         const scrollY = window.scrollY;
         const hasTopBar = document.body.classList.contains('has-top-bar');
         const topBarHidden = document.body.classList.contains('top-bar-hidden');
+        
+        // 轮播图全屏控制
+        const heroSection = document.querySelector('.hero-section');
+        if (heroSection) {
+            if (scrollY === 0) {
+                // 在顶部时设为全屏
+                heroSection.classList.add('fullscreen');
+                document.body.classList.add('hero-fullscreen');
+            } else {
+                // 滚动后移除全屏
+                heroSection.classList.remove('fullscreen');
+                document.body.classList.remove('hero-fullscreen');
+            }
+        }
         
         // 更新导航栏位置（优化性能，只在必要时更新）
         let navbarTop = '0px';
