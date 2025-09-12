@@ -60,9 +60,6 @@ debug_*.py
 *.bak
 *~
 
-# Migration scripts (一次性使用)
-migrate_*.py
-add_*.py
 
 # Check scripts (开发调试用)
 check_*.py
