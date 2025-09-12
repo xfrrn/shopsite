@@ -242,3 +242,39 @@ class FeaturedProductListResponse(BaseModel):
 class FeaturedProductDisplay(BaseModel):
     position: int
     product: Optional[ProductResponse] = None
+
+# 关于我们相关模型
+class AboutUsBase(BaseModel):
+    title: str = Field("关于我们", min_length=1, max_length=255, description="标题")
+    title_en: Optional[str] = Field(None, max_length=255, description="英文标题")
+    title_zh: Optional[str] = Field(None, max_length=255, description="中文标题")
+    content: str = Field(..., min_length=1, description="内容")
+    content_en: Optional[str] = Field(None, description="英文内容")
+    content_zh: Optional[str] = Field(None, description="中文内容")
+    background_image_url: Optional[str] = Field(None, max_length=500, description="背景图片URL")
+    text_color: Optional[str] = Field("#333333", max_length=20, description="文字颜色")
+    background_overlay: Optional[str] = Field("rgba(255, 255, 255, 0.8)", max_length=50, description="背景遮罩")
+    is_active: Optional[bool] = Field(True, description="是否启用")
+
+class AboutUsCreate(AboutUsBase):
+    pass
+
+class AboutUsUpdate(BaseModel):
+    title: Optional[str] = Field(None, min_length=1, max_length=255)
+    title_en: Optional[str] = Field(None, max_length=255)
+    title_zh: Optional[str] = Field(None, max_length=255)
+    content: Optional[str] = Field(None, min_length=1)
+    content_en: Optional[str] = None
+    content_zh: Optional[str] = None
+    background_image_url: Optional[str] = Field(None, max_length=500)
+    text_color: Optional[str] = Field(None, max_length=20)
+    background_overlay: Optional[str] = Field(None, max_length=50)
+    is_active: Optional[bool] = None
+
+class AboutUsResponse(AboutUsBase):
+    id: int
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+    
+    class Config:
+        from_attributes = True

@@ -117,3 +117,23 @@ class FeaturedProduct(Base):
     
     def __repr__(self):
         return f"<FeaturedProduct(id={self.id}, product_id={self.product_id}, position={self.position})>"
+
+class AboutUs(Base):
+    __tablename__ = "about_us"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    title = Column(String(255), nullable=False, default="关于我们", comment="标题")
+    title_en = Column(String(255), nullable=True, comment="英文标题")
+    title_zh = Column(String(255), nullable=True, comment="中文标题")
+    content = Column(Text, nullable=False, comment="内容")
+    content_en = Column(Text, nullable=True, comment="英文内容")
+    content_zh = Column(Text, nullable=True, comment="中文内容")
+    background_image_url = Column(String(500), nullable=True, comment="背景图片URL")
+    text_color = Column(String(20), default="#333333", comment="文字颜色")
+    background_overlay = Column(String(50), default="rgba(255, 255, 255, 0.8)", comment="背景遮罩")
+    is_active = Column(Boolean, default=True, comment="是否启用")
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), comment="创建时间")
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now(), comment="更新时间")
+    
+    def __repr__(self):
+        return f"<AboutUs(id={self.id}, title='{self.title}')>"

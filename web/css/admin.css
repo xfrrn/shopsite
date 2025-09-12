@@ -1208,3 +1208,115 @@ tr:hover {
 .position-btn-admin.danger:hover {
     background: #fecaca;
 }
+
+/* ==================== 关于我们管理样式 ==================== */
+
+.color-input-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.color-input-container input[type="color"] {
+    width: 50px;
+    height: 40px;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    padding: 0;
+}
+
+.color-input-container input[type="text"] {
+    flex: 1;
+    min-width: 80px;
+}
+
+.preview-container {
+    margin-top: 30px;
+    padding: 20px;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.preview-container h3 {
+    margin-bottom: 20px;
+    color: var(--text-primary);
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.about-preview-section {
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.about-preview-section:hover {
+    border-color: var(--primary-color);
+}
+
+.about-preview-content {
+    position: relative;
+    z-index: 2;
+}
+
+.about-preview-content h2 {
+    margin-bottom: 20px;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.about-preview-content p {
+    font-size: 16px;
+    line-height: 1.7;
+    margin-bottom: 16px;
+}
+
+.form-text {
+    display: block;
+    margin-top: 5px;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn.btn-secondary {
+    background: #f3f4f6;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.btn.btn-secondary:hover {
+    background: #e5e7eb;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .color-input-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .color-input-container input[type="color"] {
+        width: 100%;
+        height: 50px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .about-preview-content h2 {
+        font-size: 24px;
+    }
+}

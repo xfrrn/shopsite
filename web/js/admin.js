@@ -520,6 +520,9 @@ function switchSection(sectionName) {
             case 'background-images':
                 loadBackgroundImagesData();
                 break;
+            case 'about-us':
+                loadAboutUsData();
+                break;
             case 'settings':
                 loadSettingsData();
                 break;
@@ -554,6 +557,9 @@ function bindAdminEvents() {
     
     // 绑定文件上传
     bindFileUpload();
+    
+    // 绑定关于我们事件
+    bindAboutUsEvents();
 }
 
 // 加载管理后台数据
@@ -565,7 +571,7 @@ async function loadAdminData() {
         
         // 检查URL hash，如果有则跳转到对应页面，否则默认加载仪表板
         const hash = window.location.hash.substring(1); // 移除#号
-        if (hash && ['dashboard', 'categories', 'products', 'featured-products', 'background-images', 'uploads', 'settings'].includes(hash)) {
+        if (hash && ['dashboard', 'categories', 'products', 'featured-products', 'background-images', 'about-us', 'uploads', 'settings'].includes(hash)) {
             switchSection(hash);
         } else {
             // 清除hash并默认加载仪表板
@@ -1373,4 +1379,160 @@ async function refreshFeaturedProducts() {
     showToast('正在刷新...', 'info');
     await loadFeaturedProductsData();
     showToast('数据已刷新', 'success');
+}
+
+// ==================== 关于我们管理功能 ====================
+
+// 加载关于我们数据
+async function loadAboutUsData() {
+    try {
+        console.log('Loading about us data...');
+        
+        const response = await fetch(`${api.baseURL}/about-us/admin`, {
+            headers: {
+                'Authorization': `Bearer ${api.token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('About us data loaded:', data);
+        
+        // 填充表单
+        populateAboutUsForm(data);
+
+    } catch (error) {
+        console.error('加载关于我们数据失败:', error);
+        showToast('加载数据失败: ' + error.message, 'error');
+    }
+}
+
+// 填充关于我们表单
+function populateAboutUsForm(data) {
+    document.getElementById('about-title').value = data.title || '关于我们';
+    document.getElementById('about-title-en').value = data.title_en || '';
+    document.getElementById('about-content').value = data.content || '';
+    document.getElementById('about-content-en').value = data.content_en || '';
+    document.getElementById('about-background-image').value = data.background_image_url || '';
+    document.getElementById('about-text-color').value = data.text_color || '#333333';
+    document.getElementById('about-text-color-text').value = data.text_color || '#333333';
+    document.getElementById('about-background-overlay').value = data.background_overlay || 'rgba(255, 255, 255, 0.8)';
+}
+
+// 保存关于我们数据
+async function saveAboutUs() {
+    try {
+        const formData = {
+            title: document.getElementById('about-title').value,
+            title_en: document.getElementById('about-title-en').value,
+            content: document.getElementById('about-content').value,
+            content_en: document.getElementById('about-content-en').value,
+            background_image_url: document.getElementById('about-background-image').value || null,
+            text_color: document.getElementById('about-text-color').value,
+            background_overlay: document.getElementById('about-background-overlay').value
+        };
+
+        console.log('Saving about us data:', formData);
+
+        const response = await fetch(`${api.baseURL}/about-us/`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${api.token}`
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || `HTTP ${response.status}`);
+        }
+
+        showToast('关于我们内容保存成功', 'success');
+
+    } catch (error) {
+        console.error('保存失败:', error);
+        showToast('保存失败: ' + error.message, 'error');
+    }
+}
+
+// 预览关于我们效果
+function previewAboutUs() {
+    const title = document.getElementById('about-title').value || '关于我们';
+    const content = document.getElementById('about-content').value || '';
+    const backgroundImage = document.getElementById('about-background-image').value;
+    const textColor = document.getElementById('about-text-color').value;
+    const backgroundOverlay = document.getElementById('about-background-overlay').value;
+    
+    // 更新预览内容
+    document.getElementById('preview-title').textContent = title;
+    document.getElementById('preview-content').innerHTML = content.replace(/\n/g, '<br>');
+    
+    // 更新预览样式
+    const previewSection = document.querySelector('.about-preview-section');
+    const previewContent = document.querySelector('.about-preview-content');
+    
+    if (backgroundImage) {
+        previewSection.style.backgroundImage = `url(${backgroundImage})`;
+        previewSection.style.backgroundSize = 'cover';
+        previewSection.style.backgroundPosition = 'center';
+    } else {
+        previewSection.style.backgroundImage = 'none';
+        previewSection.style.backgroundColor = '#f8f9fa';
+    }
+    
+    previewSection.style.position = 'relative';
+    previewSection.style.minHeight = '200px';
+    previewSection.style.padding = '40px 20px';
+    previewSection.style.borderRadius = '8px';
+    previewSection.style.overflow = 'hidden';
+    
+    // 添加遮罩层
+    if (backgroundOverlay && backgroundOverlay !== 'transparent') {
+        previewSection.style.background = backgroundImage 
+            ? `linear-gradient(${backgroundOverlay}, ${backgroundOverlay}), url(${backgroundImage})`
+            : backgroundOverlay;
+        previewSection.style.backgroundSize = 'cover';
+        previewSection.style.backgroundPosition = 'center';
+    }
+    
+    previewContent.style.color = textColor;
+    previewContent.style.position = 'relative';
+    previewContent.style.zIndex = '2';
+    previewContent.style.textAlign = 'center';
+    
+    // 显示预览
+    document.getElementById('about-us-preview').style.display = 'block';
+    document.getElementById('about-us-preview').scrollIntoView({ behavior: 'smooth' });
+}
+
+// 绑定关于我们表单事件
+function bindAboutUsEvents() {
+    // 表单提交
+    const aboutUsForm = document.getElementById('about-us-form');
+    if (aboutUsForm) {
+        aboutUsForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveAboutUs();
+        });
+    }
+    
+    // 颜色选择器同步
+    const colorInput = document.getElementById('about-text-color');
+    const colorTextInput = document.getElementById('about-text-color-text');
+    
+    if (colorInput && colorTextInput) {
+        colorInput.addEventListener('input', function() {
+            colorTextInput.value = this.value;
+        });
+        
+        colorTextInput.addEventListener('input', function() {
+            if (/^#[0-9A-Fa-f]{6}$/.test(this.value)) {
+                colorInput.value = this.value;
+            }
+        });
+    }
 }
