@@ -9,7 +9,9 @@ class TopInfoBarController {
         this.body = document.body;
         this.lastScrollY = 0;
         this.isVisible = true;
-        this.scrollThreshold = 10; // 滚动阈值
+        this.scrollThreshold = 0; // 设置为0，只有在最顶部才显示
+        this.isAnimating = false; // 添加动画状态标记
+        this.animationTimeout = null; // 动画延迟
         
         this.init();
     }
@@ -34,6 +36,7 @@ class TopInfoBarController {
         let ticking = false;
         
         window.addEventListener('scroll', () => {
+            // 立即响应滚动，不使用防抖延迟
             if (!ticking) {
                 requestAnimationFrame(() => {
                     this.handleScroll();
@@ -41,16 +44,23 @@ class TopInfoBarController {
                 });
                 ticking = true;
             }
-        });
+        }, { passive: true });
     }
     
     handleScroll() {
         const currentScrollY = window.scrollY;
         
-        // 如果在页面顶部（滚动距离小于阈值）
-        if (currentScrollY <= this.scrollThreshold) {
+        // 避免在动画过程中重复触发
+        if (this.isAnimating) {
+            return;
+        }
+        
+        // 极简逻辑：只有在最顶部才显示信息栏
+        if (currentScrollY === 0) {
+            // 完全在顶部时显示信息栏
             this.showTopBar();
         } else {
+            // 任何滚动都隐藏信息栏
             this.hideTopBar();
         }
         
@@ -58,7 +68,14 @@ class TopInfoBarController {
     }
     
     showTopBar() {
-        if (!this.isVisible) {
+        if (!this.isVisible && !this.isAnimating) {
+            this.isAnimating = true;
+            
+            // 清除之前的超时
+            if (this.animationTimeout) {
+                clearTimeout(this.animationTimeout);
+            }
+            
             this.topBar.classList.remove('hidden');
             this.body.classList.remove('top-bar-hidden');
             this.isVisible = true;
@@ -66,18 +83,35 @@ class TopInfoBarController {
             // 立即更新导航栏位置
             this.updateNavbarPosition();
             
+            // 动画完成后重置标记
+            this.animationTimeout = setTimeout(() => {
+                this.isAnimating = false;
+            }, 250); // 与CSS动画时间匹配
+            
             console.log('顶部信息栏显示');
         }
     }
     
     hideTopBar() {
-        if (this.isVisible) {
+        if (this.isVisible && !this.isAnimating) {
+            this.isAnimating = true;
+            
+            // 清除之前的超时
+            if (this.animationTimeout) {
+                clearTimeout(this.animationTimeout);
+            }
+            
             this.topBar.classList.add('hidden');
             this.body.classList.add('top-bar-hidden');
             this.isVisible = false;
             
             // 立即更新导航栏位置
             this.updateNavbarPosition();
+            
+            // 动画完成后重置标记
+            this.animationTimeout = setTimeout(() => {
+                this.isAnimating = false;
+            }, 250); // 与CSS动画时间匹配
             
             console.log('顶部信息栏隐藏');
         }
@@ -120,11 +154,12 @@ class TopInfoBarController {
     checkInitialState() {
         // 页面加载时检查初始滚动位置
         const currentScrollY = window.scrollY;
-        if (currentScrollY > this.scrollThreshold) {
-            this.hideTopBar();
+        if (currentScrollY === 0) {
+            // 只有完全在顶部才显示信息栏
+            this.showTopBar();
         } else {
-            // 确保导航栏位置正确
-            this.updateNavbarPosition();
+            // 任何位置都隐藏信息栏
+            this.hideTopBar();
         }
     }
 }

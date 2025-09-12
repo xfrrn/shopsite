@@ -632,26 +632,42 @@ function initNavbarScrollEffect() {
         const hasTopBar = document.body.classList.contains('has-top-bar');
         const topBarHidden = document.body.classList.contains('top-bar-hidden');
         
-        // 更新导航栏位置
+        // 更新导航栏位置（优化性能，只在必要时更新）
         let navbarTop = '0px';
         if (hasTopBar && !topBarHidden) {
             navbarTop = '40px'; // 顶部信息栏高度
         }
-        navbar.style.setProperty('top', navbarTop, 'important');
         
-        // 根据顶部信息栏的状态调整滚动阈值
-        let scrollThreshold = 50;
-        if (hasTopBar && !topBarHidden) {
-            // 如果顶部信息栏显示，调整阈值以避免过早显示背景
-            scrollThreshold = 80;
+        // 避免不必要的样式更新
+        const currentTop = navbar.style.top;
+        if (currentTop !== navbarTop) {
+            navbar.style.setProperty('top', navbarTop, 'important');
         }
         
-        if (scrollY > scrollThreshold) {
-            // 滚动超过阈值时显示背景
-            navbar.classList.add('scrolled');
-        } else {
-            // 回到顶部时恢复透明
-            navbar.classList.remove('scrolled');
+        // 根据顶部信息栏的状态调整滚动阈值
+        let scrollThreshold = 1; // 极低阈值，一滚动就显示背景
+        if (hasTopBar && !topBarHidden) {
+            // 如果顶部信息栏显示，不显示导航栏背景
+            scrollThreshold = 999999; // 设置极高值，确保不会触发
+        }
+        
+        // 添加滚动方向判断，让动画更自然
+        const scrollDirection = scrollY > lastScrollY ? 'down' : 'up';
+        const scrollDelta = Math.abs(scrollY - lastScrollY);
+        
+        // 降低滚动距离要求，让背景变化更敏感
+        if (scrollDelta > 1) {
+            if (scrollY > scrollThreshold) {
+                // 滚动超过阈值时显示背景
+                if (!navbar.classList.contains('scrolled')) {
+                    navbar.classList.add('scrolled');
+                }
+            } else {
+                // 回到顶部时恢复透明
+                if (navbar.classList.contains('scrolled')) {
+                    navbar.classList.remove('scrolled');
+                }
+            }
         }
         
         lastScrollY = scrollY;

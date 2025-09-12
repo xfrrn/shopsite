@@ -53,7 +53,7 @@ body {
     color: white;
     z-index: 1002;
     font-size: 14px;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    transition: transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -209,7 +209,7 @@ body {
 /* 调整导航栏位置以适应顶部信息栏 */
 body.has-top-bar .navbar {
     top: 40px !important;
-    transition: top 0.3s ease !important;
+    transition: top 0.25s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
 }
 
 body.has-top-bar.top-bar-hidden .navbar {
@@ -219,6 +219,7 @@ body.has-top-bar.top-bar-hidden .navbar {
 /* 调整主内容区域的padding以适应顶部信息栏 */
 body.has-top-bar .main-content {
     padding-top: 110px !important; /* 40px (info bar) + 70px (navbar) */
+    transition: padding-top 0.25s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
 }
 
 body.has-top-bar.top-bar-hidden .main-content {
@@ -289,7 +290,7 @@ body.has-top-bar.top-bar-hidden .main-content {
     top: 0;
     width: 100% !important;
     z-index: 1001 !important;
-    transition: all 0.3s ease !important;
+    transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
 }
 
 /* 滚动后的导航栏样式 */
@@ -418,7 +419,7 @@ body.has-top-bar.top-bar-hidden .main-content {
 .main-content {
     margin-top: 0 !important;
     padding-top: 70px !important; /* 默认只有导航栏高度 */
-    transition: padding-top 0.3s ease !important;
+    transition: padding-top 0.25s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
 }
 
 /* Hero区域强制样式 */

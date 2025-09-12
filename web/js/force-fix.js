@@ -258,23 +258,34 @@
             const hasTopBar = document.body.classList.contains('has-top-bar');
             const topBarHidden = document.body.classList.contains('top-bar-hidden');
             
-            // 更新导航栏位置
-            let navbarTop = '0';
+            // 更新导航栏位置（使用平滑过渡）
+            let navbarTop = '0px';
             if (hasTopBar && !topBarHidden) {
                 navbarTop = '40px'; // 顶部信息栏高度
             }
-            navbar.style.setProperty('top', navbarTop, 'important');
             
-            // 根据顶部信息栏的状态调整滚动阈值
-            let scrollThreshold = 50;
-            if (hasTopBar && !topBarHidden) {
-                scrollThreshold = 80;
+            // 只在位置真正需要改变时才更新
+            const currentTop = navbar.style.top;
+            if (currentTop !== navbarTop) {
+                navbar.style.setProperty('top', navbarTop, 'important');
             }
             
+            // 根据顶部信息栏的状态调整滚动阈值
+            let scrollThreshold = 1; // 极低阈值，一滚动就显示背景
+            if (hasTopBar && !topBarHidden) {
+                // 如果顶部信息栏显示，不显示导航栏背景
+                scrollThreshold = 999999; // 设置极高值，确保不会触发
+            }
+            
+            // 添加渐进式背景透明度
             if (scrollY > scrollThreshold) {
-                navbar.classList.add('scrolled');
+                if (!navbar.classList.contains('scrolled')) {
+                    navbar.classList.add('scrolled');
+                }
             } else {
-                navbar.classList.remove('scrolled');
+                if (navbar.classList.contains('scrolled')) {
+                    navbar.classList.remove('scrolled');
+                }
             }
             
             // 强制确保文字颜色正确
