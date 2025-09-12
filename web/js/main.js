@@ -74,6 +74,8 @@ function forceApplyStyles() {
             align-items: center !important;
             justify-content: center !important;
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+            margin: 0 !important;
+            padding: 0 !important;
         `;
         console.log('Hero区域样式已强制应用');
     }
@@ -627,9 +629,25 @@ function initNavbarScrollEffect() {
     
     function updateNavbar() {
         const scrollY = window.scrollY;
+        const hasTopBar = document.body.classList.contains('has-top-bar');
+        const topBarHidden = document.body.classList.contains('top-bar-hidden');
         
-        if (scrollY > 50) {
-            // 滚动超过50px时显示背景
+        // 更新导航栏位置
+        let navbarTop = '0px';
+        if (hasTopBar && !topBarHidden) {
+            navbarTop = '40px'; // 顶部信息栏高度
+        }
+        navbar.style.setProperty('top', navbarTop, 'important');
+        
+        // 根据顶部信息栏的状态调整滚动阈值
+        let scrollThreshold = 50;
+        if (hasTopBar && !topBarHidden) {
+            // 如果顶部信息栏显示，调整阈值以避免过早显示背景
+            scrollThreshold = 80;
+        }
+        
+        if (scrollY > scrollThreshold) {
+            // 滚动超过阈值时显示背景
             navbar.classList.add('scrolled');
         } else {
             // 回到顶部时恢复透明

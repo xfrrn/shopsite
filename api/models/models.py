@@ -137,3 +137,22 @@ class AboutUs(Base):
     
     def __repr__(self):
         return f"<AboutUs(id={self.id}, title='{self.title}')>"
+
+class TopInfoBar(Base):
+    __tablename__ = "top_info_bar"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    phone = Column(String(50), nullable=True, comment="客服电话")
+    email = Column(String(100), nullable=True, comment="客服邮箱")
+    wechat_url = Column(String(500), nullable=True, comment="微信链接")
+    wechat_qr = Column(String(500), nullable=True, comment="微信二维码URL")
+    weibo_url = Column(String(500), nullable=True, comment="微博链接")
+    qq_url = Column(String(500), nullable=True, comment="QQ链接")
+    github_url = Column(String(500), nullable=True, comment="GitHub链接")
+    linkedin_url = Column(String(500), nullable=True, comment="LinkedIn链接")
+    is_active = Column(Boolean, default=True, comment="是否启用")
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), comment="创建时间")
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now(), comment="更新时间")
+    
+    def __repr__(self):
+        return f"<TopInfoBar(id={self.id}, phone='{self.phone}')>"

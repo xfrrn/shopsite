@@ -278,3 +278,37 @@ class AboutUsResponse(AboutUsBase):
     
     class Config:
         from_attributes = True
+
+# 顶部信息栏相关模型
+class TopInfoBarBase(BaseModel):
+    phone: Optional[str] = Field(None, max_length=50, description="客服电话")
+    email: Optional[str] = Field(None, max_length=100, description="客服邮箱")
+    wechat_url: Optional[str] = Field(None, max_length=500, description="微信链接")
+    wechat_qr: Optional[str] = Field(None, max_length=500, description="微信二维码URL")
+    weibo_url: Optional[str] = Field(None, max_length=500, description="微博链接")
+    qq_url: Optional[str] = Field(None, max_length=500, description="QQ链接")
+    github_url: Optional[str] = Field(None, max_length=500, description="GitHub链接")
+    linkedin_url: Optional[str] = Field(None, max_length=500, description="LinkedIn链接")
+    is_active: Optional[bool] = Field(True, description="是否启用")
+
+class TopInfoBarCreate(TopInfoBarBase):
+    pass
+
+class TopInfoBarUpdate(BaseModel):
+    phone: Optional[str] = Field(None, max_length=50)
+    email: Optional[str] = Field(None, max_length=100)
+    wechat_url: Optional[str] = Field(None, max_length=500)
+    wechat_qr: Optional[str] = Field(None, max_length=500)
+    weibo_url: Optional[str] = Field(None, max_length=500)
+    qq_url: Optional[str] = Field(None, max_length=500)
+    github_url: Optional[str] = Field(None, max_length=500)
+    linkedin_url: Optional[str] = Field(None, max_length=500)
+    is_active: Optional[bool] = None
+
+class TopInfoBarResponse(TopInfoBarBase):
+    id: int
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+    
+    class Config:
+        from_attributes = True

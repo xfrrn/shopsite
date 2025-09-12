@@ -42,6 +42,242 @@ body {
     padding: 0 24px;
 }
 
+/* ==================== 顶部信息栏样式 ==================== */
+.top-info-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    z-index: 1002;
+    font-size: 14px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.top-info-bar.hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+}
+
+.top-info-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 左侧联系信息 */
+.contact-info {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.contact-item i {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+.contact-text {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+.contact-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.contact-link:hover {
+    color: #ffd700;
+    text-decoration: underline;
+}
+
+/* 右侧社交媒体 */
+.social-media {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.social-text {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+.social-icons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.social-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 不同社交媒体的悬浮颜色 */
+.social-link:hover.wechat-color { background: #07c160; }
+.social-link:hover.weibo-color { background: #e6162d; }
+.social-link:hover.qq-color { background: #12b7f5; }
+.social-link:hover.github-color { background: #333; }
+.social-link:hover.linkedin-color { background: #0077b5; }
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .top-info-bar {
+        height: 35px;
+        font-size: 12px;
+    }
+    
+    .contact-info {
+        gap: 15px;
+    }
+    
+    .contact-item:nth-child(2) {
+        display: none; /* 在小屏幕上隐藏邮箱 */
+    }
+    
+    .social-media {
+        gap: 10px;
+    }
+    
+    .social-text {
+        display: none; /* 在小屏幕上隐藏"关注我们"文字 */
+    }
+    
+    .social-icons {
+        gap: 8px;
+    }
+    
+    .social-link {
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .top-info-container {
+        padding: 0 15px;
+    }
+    
+    .contact-text {
+        display: none; /* 在超小屏幕上只显示图标和链接 */
+    }
+    
+    .social-icons {
+        gap: 6px;
+    }
+    
+    .social-link {
+        width: 22px;
+        height: 22px;
+        font-size: 11px;
+    }
+}
+
+/* 调整导航栏位置以适应顶部信息栏 */
+body.has-top-bar .navbar {
+    top: 40px !important;
+    transition: top 0.3s ease !important;
+}
+
+body.has-top-bar.top-bar-hidden .navbar {
+    top: 0 !important;
+}
+
+/* 调整主内容区域的padding以适应顶部信息栏 */
+body.has-top-bar .main-content {
+    padding-top: 110px !important; /* 40px (info bar) + 70px (navbar) */
+}
+
+body.has-top-bar.top-bar-hidden .main-content {
+    padding-top: 70px !important; /* 只有 navbar 高度 */
+}
+
+/* 微信二维码模态框 */
+.wechat-qr-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(5px);
+}
+
+.qr-modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    position: relative;
+    max-width: 300px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.qr-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #999;
+    transition: color 0.3s ease;
+}
+
+.qr-close:hover {
+    color: #333;
+}
+
+.qr-modal-content h3 {
+    margin-bottom: 20px;
+    color: #07c160;
+    font-size: 18px;
+}
+
+.qr-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
 /* 导航栏强制样式 */
 .navbar {
     background: transparent !important;
@@ -50,9 +286,9 @@ body {
     box-shadow: none !important;
     border-bottom: none !important;
     position: fixed !important;
-    top: 0 !important;
+    top: 0;
     width: 100% !important;
-    z-index: 1000 !important;
+    z-index: 1001 !important;
     transition: all 0.3s ease !important;
 }
 
@@ -180,7 +416,9 @@ body {
 
 /* 主要内容 */
 .main-content {
-    margin-top: 70px !important;
+    margin-top: 0 !important;
+    padding-top: 70px !important; /* 默认只有导航栏高度 */
+    transition: padding-top 0.3s ease !important;
 }
 
 /* Hero区域强制样式 */
@@ -192,6 +430,8 @@ body {
     align-items: center !important;
     justify-content: center !important;
     background: var(--light-bg) !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .hero-carousel {

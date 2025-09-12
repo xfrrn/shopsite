@@ -7,7 +7,8 @@ async function loadAboutUsContent() {
     try {
         console.log('Loading about us content...');
         
-        const response = await fetch(`${window.api ? window.api.baseURL : '/api'}/about-us/`);
+        const apiBase = window.api ? window.api.baseURL : (window.location.hostname === 'localhost' ? 'http://localhost:8000/api' : '/api');
+        const response = await fetch(`${apiBase}/about-us/`);
         
         if (!response.ok) {
             console.warn('Failed to load about us data, using default content');

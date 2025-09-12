@@ -13,15 +13,26 @@
         const navMenu = document.querySelector('.nav-menu');
         
         if (navbar) {
+            // 检查是否有顶部信息栏
+            const hasTopBar = document.body.classList.contains('has-top-bar');
+            const topBarHidden = document.body.classList.contains('top-bar-hidden');
+            
+            // 根据顶部信息栏状态决定导航栏位置
+            let navbarTop = '0';
+            if (hasTopBar && !topBarHidden) {
+                navbarTop = '40px'; // 顶部信息栏高度
+            }
+            
             navbar.style.cssText = `
                 position: fixed !important;
-                top: 0 !important;
+                top: ${navbarTop} !important;
                 width: 100% !important;
                 z-index: 1000 !important;
                 display: block !important;
                 visibility: visible !important;
                 opacity: 1 !important;
                 height: 70px !important;
+                transition: top 0.3s ease !important;
             `;
             // 移除任何内联的背景样式，让CSS类控制透明效果
             navbar.style.removeProperty('background');
@@ -107,6 +118,8 @@
                 background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
                 visibility: visible !important;
                 opacity: 1 !important;
+                margin: 0 !important;
+                padding: 0 !important;
             `;
             console.log('✅ Hero区域样式已应用');
         }
@@ -242,8 +255,23 @@
         
         function updateNavbar() {
             const scrollY = window.scrollY;
+            const hasTopBar = document.body.classList.contains('has-top-bar');
+            const topBarHidden = document.body.classList.contains('top-bar-hidden');
             
-            if (scrollY > 50) {
+            // 更新导航栏位置
+            let navbarTop = '0';
+            if (hasTopBar && !topBarHidden) {
+                navbarTop = '40px'; // 顶部信息栏高度
+            }
+            navbar.style.setProperty('top', navbarTop, 'important');
+            
+            // 根据顶部信息栏的状态调整滚动阈值
+            let scrollThreshold = 50;
+            if (hasTopBar && !topBarHidden) {
+                scrollThreshold = 80;
+            }
+            
+            if (scrollY > scrollThreshold) {
                 navbar.classList.add('scrolled');
             } else {
                 navbar.classList.remove('scrolled');

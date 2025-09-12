@@ -27,6 +27,7 @@ from api.routes.admin_background_images import router as admin_background_images
 from api.routes.featured_products import router as featured_products_router
 from api.routes.admin_featured_products import router as admin_featured_products_router
 from api.routes.about_us import router as about_us_router
+from api.routes.top_info import router as top_info_router
 
 # 创建配置实例
 config = Config()
@@ -112,6 +113,7 @@ app.include_router(admin_background_images_router, prefix="/api/admin/background
 app.include_router(featured_products_router, prefix="/api")
 app.include_router(admin_featured_products_router, prefix="/api")
 app.include_router(about_us_router, prefix="/api")
+app.include_router(top_info_router, prefix="/api")
 
 # 静态文件服务
 upload_dir = UploadConfig.UPLOAD_PATH

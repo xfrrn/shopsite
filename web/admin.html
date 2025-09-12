@@ -82,6 +82,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="#top-info-bar" class="menu-item" data-section="top-info-bar">
+                        <i class="fas fa-phone"></i> 顶部信息栏
+                    </a>
+                </li>
+                <li>
                     <a href="#uploads" class="menu-item" data-section="uploads">
                         <i class="fas fa-upload"></i> 文件上传
                     </a>
@@ -357,6 +362,91 @@
                                 <h2 id="preview-title">关于我们</h2>
                                 <div id="preview-content">
                                     <p>我们致力于为客户提供高质量的产品和优质的服务体验。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 顶部信息栏管理 -->
+                <section id="top-info-bar-section" class="section">
+                    <h2>
+                        <i class="fas fa-phone"></i> 顶部信息栏管理
+                    </h2>
+                    
+                    <div class="form-container">
+                        <form id="top-info-bar-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="service-phone">客服热线</label>
+                                    <input type="tel" id="service-phone" placeholder="400-123-4567" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="service-email">客服邮箱</label>
+                                    <input type="email" id="service-email" placeholder="service@example.com" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-section">
+                                <h3>社交媒体链接</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="wechat-url">微信链接</label>
+                                        <input type="url" id="wechat-url" placeholder="https://weixin.qq.com/">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="wechat-qr">微信二维码URL</label>
+                                        <input type="url" id="wechat-qr" placeholder="https://example.com/wechat-qr.jpg">
+                                        <small class="form-text">用于扫码关注，留空则直接跳转链接</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="weibo-url">微博链接</label>
+                                        <input type="url" id="weibo-url" placeholder="https://weibo.com/yourname">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="qq-url">QQ链接</label>
+                                        <input type="url" id="qq-url" placeholder="https://qzone.qq.com/">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="github-url">GitHub链接</label>
+                                        <input type="url" id="github-url" placeholder="https://github.com/yourname">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="linkedin-url">LinkedIn链接</label>
+                                        <input type="url" id="linkedin-url" placeholder="https://linkedin.com/in/yourname">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="previewTopInfoBar()">
+                                    <i class="fas fa-eye"></i> 预览效果
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> 保存更改
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- 预览区域 -->
+                    <div class="preview-container" id="top-info-bar-preview" style="display: none;">
+                        <h3>预览效果</h3>
+                        <div class="top-info-preview">
+                            <div class="preview-contact-info">
+                                <span><i class="fas fa-phone"></i> 客服热线：<strong id="preview-phone">400-123-4567</strong></span>
+                                <span><i class="fas fa-envelope"></i> 邮箱：<strong id="preview-email">service@example.com</strong></span>
+                            </div>
+                            <div class="preview-social-media">
+                                <span>关注我们：</span>
+                                <div class="preview-social-icons" id="preview-social-icons">
+                                    <!-- 社交图标将动态生成 -->
                                 </div>
                             </div>
                         </div>

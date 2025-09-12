@@ -523,6 +523,9 @@ function switchSection(sectionName) {
             case 'about-us':
                 loadAboutUsData();
                 break;
+            case 'top-info-bar':
+                loadTopInfoBarData();
+                break;
             case 'settings':
                 loadSettingsData();
                 break;
@@ -560,6 +563,9 @@ function bindAdminEvents() {
     
     // 绑定关于我们事件
     bindAboutUsEvents();
+    
+    // 绑定顶部信息栏事件
+    bindTopInfoBarEvents();
 }
 
 // 加载管理后台数据
@@ -571,7 +577,7 @@ async function loadAdminData() {
         
         // 检查URL hash，如果有则跳转到对应页面，否则默认加载仪表板
         const hash = window.location.hash.substring(1); // 移除#号
-        if (hash && ['dashboard', 'categories', 'products', 'featured-products', 'background-images', 'about-us', 'uploads', 'settings'].includes(hash)) {
+        if (hash && ['dashboard', 'categories', 'products', 'featured-products', 'background-images', 'about-us', 'top-info-bar', 'uploads', 'settings'].includes(hash)) {
             switchSection(hash);
         } else {
             // 清除hash并默认加载仪表板
@@ -1533,6 +1539,136 @@ function bindAboutUsEvents() {
             if (/^#[0-9A-Fa-f]{6}$/.test(this.value)) {
                 colorInput.value = this.value;
             }
+        });
+    }
+}
+
+// ==================== 顶部信息栏管理功能 ====================
+
+// 加载顶部信息栏数据
+async function loadTopInfoBarData() {
+    try {
+        console.log('Loading top info bar data...');
+        
+        const response = await fetch(`${api.baseURL}/top-info/admin`, {
+            headers: {
+                'Authorization': `Bearer ${api.token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Top info bar data loaded:', data);
+        
+        // 填充表单
+        populateTopInfoBarForm(data);
+
+    } catch (error) {
+        console.error('加载顶部信息栏数据失败:', error);
+        showToast('加载数据失败: ' + error.message, 'error');
+    }
+}
+
+// 填充顶部信息栏表单
+function populateTopInfoBarForm(data) {
+    document.getElementById('service-phone').value = data.phone || '';
+    document.getElementById('service-email').value = data.email || '';
+    document.getElementById('wechat-url').value = data.wechat_url || '';
+    document.getElementById('wechat-qr').value = data.wechat_qr || '';
+    document.getElementById('weibo-url').value = data.weibo_url || '';
+    document.getElementById('qq-url').value = data.qq_url || '';
+    document.getElementById('github-url').value = data.github_url || '';
+    document.getElementById('linkedin-url').value = data.linkedin_url || '';
+}
+
+// 保存顶部信息栏数据
+async function saveTopInfoBar() {
+    try {
+        const formData = {
+            phone: document.getElementById('service-phone').value,
+            email: document.getElementById('service-email').value,
+            wechat_url: document.getElementById('wechat-url').value || null,
+            wechat_qr: document.getElementById('wechat-qr').value || null,
+            weibo_url: document.getElementById('weibo-url').value || null,
+            qq_url: document.getElementById('qq-url').value || null,
+            github_url: document.getElementById('github-url').value || null,
+            linkedin_url: document.getElementById('linkedin-url').value || null
+        };
+
+        console.log('Saving top info bar data:', formData);
+
+        const response = await fetch(`${api.baseURL}/top-info/`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${api.token}`
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || `HTTP ${response.status}`);
+        }
+
+        showToast('顶部信息栏保存成功', 'success');
+
+    } catch (error) {
+        console.error('保存失败:', error);
+        showToast('保存失败: ' + error.message, 'error');
+    }
+}
+
+// 预览顶部信息栏效果
+function previewTopInfoBar() {
+    const phone = document.getElementById('service-phone').value || '400-123-4567';
+    const email = document.getElementById('service-email').value || 'service@example.com';
+    
+    // 更新预览内容
+    document.getElementById('preview-phone').textContent = phone;
+    document.getElementById('preview-email').textContent = email;
+    
+    // 更新社交媒体图标
+    const socialIconsContainer = document.getElementById('preview-social-icons');
+    socialIconsContainer.innerHTML = '';
+    
+    const socialPlatforms = [
+        { id: 'wechat-url', icon: 'fab fa-weixin', name: '微信' },
+        { id: 'weibo-url', icon: 'fab fa-weibo', name: '微博' },
+        { id: 'qq-url', icon: 'fab fa-qq', name: 'QQ' },
+        { id: 'github-url', icon: 'fab fa-github', name: 'GitHub' },
+        { id: 'linkedin-url', icon: 'fab fa-linkedin', name: 'LinkedIn' }
+    ];
+    
+    socialPlatforms.forEach(platform => {
+        const url = document.getElementById(platform.id).value;
+        if (url && url.trim()) {
+            const link = document.createElement('a');
+            link.href = url;
+            link.target = '_blank';
+            link.className = 'preview-social-link';
+            link.title = platform.name;
+            link.innerHTML = `<i class="${platform.icon}"></i>`;
+            socialIconsContainer.appendChild(link);
+        }
+    });
+    
+    // 显示预览
+    document.getElementById('top-info-bar-preview').style.display = 'block';
+    document.getElementById('top-info-bar-preview').scrollIntoView({ behavior: 'smooth' });
+}
+
+// 绑定顶部信息栏表单事件
+function bindTopInfoBarEvents() {
+    // 表单提交
+    const topInfoBarForm = document.getElementById('top-info-bar-form');
+    if (topInfoBarForm) {
+        topInfoBarForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveTopInfoBar();
         });
     }
 }
