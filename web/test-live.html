@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>实时按钮测试</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 20px; 
+            line-height: 1.6; 
+        }
+        .test-container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+        }
+        .control-panel { 
+            background: #f8f9fa; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+        }
+        .result-panel { 
+            background: white; 
+            border: 1px solid #ddd; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+        }
+        button { 
+            margin: 5px; 
+            padding: 8px 15px; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 14px; 
+        }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-warning { background: #ffc107; color: #212529; }
+        .console-output { 
+            background: #f8f9fa; 
+            border: 1px solid #ddd; 
+            padding: 10px; 
+            border-radius: 4px; 
+            font-family: monospace; 
+            font-size: 12px; 
+            max-height: 300px; 
+            overflow-y: auto; 
+        }
+        .product-demo { 
+            border: 1px solid #ddd; 
+            padding: 15px; 
+            border-radius: 8px; 
+            background: white; 
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>特色产品按钮实时测试</h1>
+        
+        <div class="control-panel">
+            <h3>控制面板</h3>
+            <button class="btn-primary" onclick="loadScripts()">重新加载脚本</button>
+            <button class="btn-success" onclick="testChinese()">测试中文</button>
+            <button class="btn-success" onclick="testEnglish()">测试英文</button>
+            <button class="btn-warning" onclick="clearConsole()">清空控制台</button>
+        </div>
+        
+        <div class="result-panel">
+            <h3>测试结果</h3>
+            <div id="test-results">点击上方按钮开始测试</div>
+        </div>
+        
+        <div class="result-panel">
+            <h3>产品卡片演示</h3>
+            <div id="product-demo" class="product-demo">
+                <!-- 产品卡片将显示在这里 -->
+            </div>
+        </div>
+        
+        <div class="result-panel">
+            <h3>控制台输出</h3>
+            <div id="console-output" class="console-output">
+                <!-- 控制台信息将显示在这里 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 劫持console.log来显示在页面上
+        const originalLog = console.log;
+        const originalWarn = console.warn;
+        const consoleOutput = [];
+        
+        console.log = function(...args) {
+            consoleOutput.push(['LOG', new Date().toLocaleTimeString(), ...args]);
+            updateConsoleDisplay();
+            originalLog.apply(console, args);
+        };
+        
+        console.warn = function(...args) {
+            consoleOutput.push(['WARN', new Date().toLocaleTimeString(), ...args]);
+            updateConsoleDisplay();
+            originalWarn.apply(console, args);
+        };
+        
+        function updateConsoleDisplay() {
+            const output = document.getElementById('console-output');
+            output.innerHTML = consoleOutput.map(entry => {
+                const [type, time, ...msgs] = entry;
+                const color = type === 'WARN' ? '#ff6b35' : '#333';
+                return `<div style="color: ${color}; margin: 2px 0;">[${time}] ${msgs.join(' ')}</div>`;
+            }).join('');
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        function clearConsole() {
+            consoleOutput.length = 0;
+            updateConsoleDisplay();
+        }
+        
+        function updateResults(html) {
+            document.getElementById('test-results').innerHTML = html;
+        }
+        
+        function loadScripts() {
+            updateResults('正在重新加载脚本...');
+            console.log('🔄 开始重新加载脚本');
+            
+            // 删除旧脚本
+            const oldScripts = document.querySelectorAll('script[data-test]');
+            oldScripts.forEach(script => script.remove());
+            
+            // 加载新脚本
+            const timestamp = Date.now();
+            
+            const i18nScript = document.createElement('script');
+            i18nScript.src = `js/i18n.js?v=${timestamp}`;
+            i18nScript.setAttribute('data-test', 'true');
+            
+            const fpScript = document.createElement('script');
+            fpScript.src = `js/featured-products.js?v=${timestamp}`;
+            fpScript.setAttribute('data-test', 'true');
+            
+            i18nScript.onload = () => {
+                console.log('✅ i18n.js 加载完成');
+                document.head.appendChild(fpScript);
+            };
+            
+            fpScript.onload = () => {
+                console.log('✅ featured-products.js 加载完成');
+                updateResults('脚本重新加载完成！');
+            };
+            
+            document.head.appendChild(i18nScript);
+        }
+        
+        function testChinese() {
+            console.log('🧪 开始中文测试');
+            runTest('zh');
+        }
+        
+        function testEnglish() {
+            console.log('🧪 开始英文测试');
+            runTest('en');
+        }
+        
+        function runTest(lang) {
+            if (!window.i18n || !window.FeaturedProducts) {
+                updateResults(`❌ 测试失败: 必要组件未加载 (i18n: ${!!window.i18n}, FP: ${!!window.FeaturedProducts})`);
+                return;
+            }
+            
+            try {
+                // 切换语言
+                console.log(`🔄 切换语言到: ${lang}`);
+                window.i18n.switchLanguage(lang);
+                
+                // 等待一小段时间确保切换完成
+                setTimeout(() => {
+                    const currentLang = window.i18n.getCurrentLanguage();
+                    const btnText = window.i18n.t('btn.view_details');
+                    
+                    console.log(`📋 当前语言: ${currentLang}`);
+                    console.log(`📋 按钮文本: "${btnText}"`);
+                    
+                    // 创建测试产品
+                    const testProduct = {
+                        id: 888,
+                        name: lang === 'zh' ? '测试产品' : 'Test Product',
+                        description: lang === 'zh' ? '这是一个测试产品的描述' : 'This is a test product description',
+                        price: 299.99,
+                        image_url: 'https://via.placeholder.com/200x200?text=Test'
+                    };
+                    
+                    console.log(`🏭 创建 FeaturedProducts 实例`);
+                    const fp = new window.FeaturedProducts();
+                    
+                    console.log(`🎨 调用 renderSingleProductCard`);
+                    const cardHTML = fp.renderSingleProductCard(testProduct, 1);
+                    
+                    // 显示产品卡片
+                    document.getElementById('product-demo').innerHTML = cardHTML;
+                    
+                    // 提取按钮文本进行验证
+                    const btnMatch = cardHTML.match(/<span class="btn-text">(.*?)<\/span>/);
+                    const extractedBtnText = btnMatch ? btnMatch[1] : '未找到';
+                    
+                    const expected = lang === 'zh' ? '查看详情' : 'View Details';
+                    const isCorrect = extractedBtnText === expected;
+                    
+                    updateResults(`
+                        <div style="margin-bottom: 10px;">
+                            <strong>测试语言:</strong> ${lang === 'zh' ? '中文' : '英文'}<br>
+                            <strong>当前语言:</strong> ${currentLang}<br>
+                            <strong>翻译结果:</strong> "${btnText}"<br>
+                            <strong>提取的按钮文本:</strong> "${extractedBtnText}"<br>
+                            <strong>预期文本:</strong> "${expected}"<br>
+                            <strong>测试结果:</strong> <span style="color: ${isCorrect ? 'green' : 'red'}; font-weight: bold;">
+                                ${isCorrect ? '✅ 通过' : '❌ 失败'}
+                            </span>
+                        </div>
+                    `);
+                    
+                    console.log(`📊 测试结果: ${isCorrect ? '通过' : '失败'}`);
+                    
+                }, 100);
+                
+            } catch (e) {
+                updateResults(`❌ 测试过程中发生错误: ${e.message}`);
+                console.log(`❌ 测试错误:`, e);
+            }
+        }
+        
+        // 页面加载完成后自动加载脚本
+        window.addEventListener('load', () => {
+            setTimeout(loadScripts, 500);
+        });
+    </script>
+</body>
+</html>

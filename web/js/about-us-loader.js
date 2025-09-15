@@ -7,15 +7,36 @@ async function loadAboutUsContent() {
     try {
         console.log('Loading about us content...');
         
+        // 获取当前语言
+        const currentLang = window.i18n ? window.i18n.getCurrentLanguage() : 'zh';
+        
         const apiBase = window.api ? window.api.baseURL : (window.location.hostname === 'localhost' ? 'http://localhost:8000/api' : '/api');
-        const response = await fetch(`${apiBase}/about-us/`);
+        
+        let response;
+        if (currentLang === 'en') {
+            response = await fetch(`${apiBase}/language/en/about-us`);
+        } else {
+            response = await fetch(`${apiBase}/about-us/`);
+        }
         
         if (!response.ok) {
             console.warn('Failed to load about us data, using default content');
             return;
         }
 
-        const data = await response.json();
+        const responseData = await response.json();
+        console.log('About us response:', responseData);
+        
+        // 处理不同的响应格式
+        let data;
+        if (currentLang === 'en' && responseData.success && responseData.data) {
+            // 多语言API返回格式: {success: true, data: {...}}
+            data = responseData.data;
+        } else {
+            // 普通API返回格式: {...}
+            data = responseData;
+        }
+        
         console.log('About us data loaded:', data);
         
         // 更新标题

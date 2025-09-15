@@ -11,7 +11,29 @@ let currentSearch = '';
 // 缓存变量
 let categoriesCache = null;
 let categoriesCacheTime = 0;
+let productsCache = null;
+let productsCacheTime = 0;
 const CACHE_DURATION = 5 * 60 * 1000; // 5分钟缓存
+
+// 清除缓存函数
+function clearDataCache() {
+    categoriesCache = null;
+    categoriesCacheTime = 0;
+    productsCache = null;
+    productsCacheTime = 0;
+}
+
+// 重新加载精选产品的全局函数
+window.loadFeaturedProducts = function() {
+    if (window.featuredProductsInstance && typeof window.featuredProductsInstance.loadFeaturedProducts === 'function') {
+        return window.featuredProductsInstance.loadFeaturedProducts();
+    }
+};
+
+// 暴露给全局以供其他模块调用
+window.clearDataCache = clearDataCache;
+window.loadCategories = loadCategories;
+window.loadProducts = loadProducts;
 
 // DOM加载完成后执行
 document.addEventListener('DOMContentLoaded', function() {
@@ -188,18 +210,40 @@ async function loadCategories() {
             return categoriesCache;
         }
         
-        // 获取分类数据
-        const response = await fetch(`${api.baseURL}/categories/`, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+        // 获取当前语言
+        const currentLang = window.i18n ? window.i18n.getCurrentLanguage() : 'zh';
+        
+        // 获取分类数据 - 根据语言选择API
+        let response;
+        if (currentLang === 'en') {
+            response = await fetch(`${api.baseURL}/language/en/categories`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+        } else {
+            response = await fetch(`${api.baseURL}/categories/`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+        }
         
         if (!response.ok) {
             throw new Error('获取分类失败');
         }
         
-        const categories = await response.json();
+        const responseData = await response.json();
+        
+        // 处理不同的响应格式
+        let categories;
+        if (currentLang === 'en' && responseData.success && responseData.data) {
+            // 多语言API返回格式: {success: true, data: [...]}
+            categories = responseData.data;
+        } else {
+            // 普通API返回格式: [...]
+            categories = responseData;
+        }
         
         // 更新缓存
         categoriesCache = categories;
@@ -219,14 +263,23 @@ function renderCategories(categories) {
     if (!container) return;
     
     if (!categories || categories.length === 0) {
-        container.innerHTML = `<p class="no-data">暂无分类数据</p>`;
+        const currentLang = window.i18n ? window.i18n.getCurrentLanguage() : 'zh';
+        const noDataText = window.i18n ? window.i18n.getTranslation('data.no_categories') : '暂无分类数据';
+        container.innerHTML = `<p class="no-data">${noDataText}</p>`;
         return;
     }
     
+    // 获取当前语言
+    const currentLang = window.i18n ? window.i18n.getCurrentLanguage() : 'zh';
+    
     container.innerHTML = categories.map(category => {
+        // 根据语言选择名称和描述
+        const categoryName = currentLang === 'en' && category.name_en ? category.name_en : category.name;
+        const categoryDescription = currentLang === 'en' && category.description_en ? category.description_en : (category.description || '');
+        
         // 使用数据库中的icon_url，如果没有则使用默认图标
         const iconHtml = category.icon_url 
-            ? `<img src="${category.icon_url}" alt="${category.name}" style="width: 48px; height: 48px; object-fit: cover; border-radius: 8px;">`
+            ? `<img src="${category.icon_url}" alt="${categoryName}" style="width: 48px; height: 48px; object-fit: cover; border-radius: 8px;">`
             : `<i class="fas fa-${getCategoryIcon(category.name)}"></i>`;
             
         return `
@@ -234,8 +287,8 @@ function renderCategories(categories) {
                 <div class="category-icon">
                     ${iconHtml}
                 </div>
-                <h3>${category.name}</h3>
-                <p>${category.description || ''}</p>
+                <h3>${categoryName}</h3>
+                <p>${categoryDescription}</p>
             </div>
         `;
     }).join('');
@@ -260,6 +313,16 @@ function getCategoryIcon(categoryName) {
 // 加载产品
 async function loadProducts() {
     try {
+        // 检查缓存（注意：搜索和分类筛选时不使用缓存）
+        if (!currentCategory && !currentSearch && currentPage === 1) {
+            const now = Date.now();
+            if (productsCache && (now - productsCacheTime) < CACHE_DURATION) {
+                renderProducts(productsCache.items || productsCache);
+                renderPagination(productsCache);
+                return productsCache;
+            }
+        }
+        
         const params = {
             page: currentPage,
             limit: 12,
@@ -289,7 +352,42 @@ async function loadProducts() {
             params.sort_order = 'desc';
         }
         
-        const response = await api.getProducts(params);
+        // 获取当前语言
+        const currentLang = window.i18n ? window.i18n.getCurrentLanguage() : 'zh';
+        
+        let response;
+        if (currentLang === 'en') {
+            // 使用英文API
+            const queryString = new URLSearchParams(params).toString();
+            const apiResponse = await fetch(`${api.baseURL}/language/en/products${queryString ? '?' + queryString : ''}`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!apiResponse.ok) {
+                throw new Error(`HTTP error! status: ${apiResponse.status}`);
+            }
+            
+            const responseData = await apiResponse.json();
+            
+            // 处理多语言API响应格式: {success: true, data: [...]}
+            if (responseData.success && responseData.data) {
+                response = { items: responseData.data };
+            } else {
+                response = responseData;
+            }
+        } else {
+            // 使用中文API
+            response = await api.getProducts(params);
+        }
+        
+        // 更新缓存（仅在默认条件下缓存）
+        if (!currentCategory && !currentSearch && currentPage === 1) {
+            productsCache = response;
+            productsCacheTime = Date.now();
+        }
+        
         renderProducts(response.items || response);
         renderPagination(response);
         
@@ -303,36 +401,43 @@ async function loadProducts() {
 function renderProducts(products) {
     const container = document.getElementById('products-grid');
     if (!container) return;
-    
+
     if (!products || products.length === 0) {
-        container.innerHTML = `<div class="no-data"><p>暂无产品数据</p></div>`;
+        const currentLang = window.i18n ? window.i18n.getCurrentLanguage() : 'zh';
+        const noDataText = window.i18n ? window.i18n.getTranslation('data.no_products') : '暂无产品数据';
+        container.innerHTML = `<div class="no-data"><p>${noDataText}</p></div>`;
         return;
     }
     
-    container.innerHTML = products.map(product => `
-        <div class="product-card" onclick="showProductDetails(${product.id})">
-            <div class="product-image">
-                ${product.image_url 
-                    ? `<img src="${product.image_url}" alt="${product.name}" onerror="this.style.display='none'; this.parentNode.innerHTML='<i class=&quot;fas fa-image&quot;></i>'">`
-                    : '<i class="fas fa-image"></i>'
-                }
-            </div>
-            <div class="product-info">
-                <h3>${product.name}</h3>
-                <p>${truncateText(product.description || '', 100)}</p>
-                <div class="product-price">¥${product.price.toFixed(2)}</div>
-                <div class="product-meta">
-                    <span class="brand">${product.brand || ''}</span>
-                    <span class="stock-info ${product.stock_quantity < 10 ? 'low-stock' : ''}">
-                        库存: ${product.stock_quantity || 0}
-                    </span>
+    // 获取当前语言
+    const currentLang = window.i18n ? window.i18n.getCurrentLanguage() : 'zh';
+    const stockText = currentLang === 'en' ? 'Stock' : '库存';
+    
+    container.innerHTML = products.map(product => {
+        const stockQuantity = product.stock_quantity || product.stock || 0;
+        return `
+            <div class="product-card" onclick="showProductDetails(${product.id})">
+                <div class="product-image">
+                    ${product.image_url 
+                        ? `<img src="${product.image_url}" alt="${product.name}" onerror="this.style.display='none'; this.parentNode.innerHTML='<i class=&quot;fas fa-image&quot;></i>'">`
+                        : '<i class="fas fa-image"></i>'
+                    }
+                </div>
+                <div class="product-info">
+                    <h3>${product.name}</h3>
+                    <p>${truncateText(product.description || '', 100)}</p>
+                    <div class="product-price">¥${product.price.toFixed(2)}</div>
+                    <div class="product-meta">
+                        <span class="brand">${product.brand || ''}</span>
+                        <span class="stock-info ${stockQuantity < 10 ? 'low-stock' : ''}">
+                            ${stockText}: ${stockQuantity}
+                        </span>
+                    </div>
                 </div>
             </div>
-        </div>
-    `).join('');
-}
-
-// 渲染分页
+        `;
+    }).join('');
+}// 渲染分页
 function renderPagination(response) {
     const container = document.getElementById('pagination');
     if (!container) return;
@@ -344,13 +449,17 @@ function renderPagination(response) {
         return;
     }
     
+    // 获取翻译文本
+    const prevText = window.i18n ? window.i18n.getTranslation('pagination.previous') : '上一页';
+    const nextText = window.i18n ? window.i18n.getTranslation('pagination.next') : '下一页';
+    
     let paginationHTML = '';
     
     // 上一页按钮
     paginationHTML += `
         <button onclick="changePage(${currentPage - 1})" 
                 ${currentPage === 1 ? 'disabled' : ''}>
-            <i class="fas fa-chevron-left"></i> 上一页
+            <i class="fas fa-chevron-left"></i> ${prevText}
         </button>
     `;
     
@@ -384,7 +493,7 @@ function renderPagination(response) {
     paginationHTML += `
         <button onclick="changePage(${currentPage + 1})" 
                 ${currentPage === totalPages ? 'disabled' : ''}>
-            下一页 <i class="fas fa-chevron-right"></i>
+            ${nextText} <i class="fas fa-chevron-right"></i>
         </button>
     `;
     
@@ -403,8 +512,15 @@ async function loadCategoryFilter() {
         const select = document.getElementById('category-filter');
         if (!select) return;
         
-        select.innerHTML = `<option value="">所有分类</option>` +
-            categories.map(cat => `<option value="${cat.id}">${cat.name}</option>`).join('');
+        // 获取当前语言
+        const currentLang = window.i18n ? window.i18n.getCurrentLanguage() : 'zh';
+        const allCategoriesText = window.i18n ? window.i18n.getTranslation('filter.all_categories') : '所有分类';
+        
+        select.innerHTML = `<option value="">${allCategoriesText}</option>` +
+            categories.map(cat => {
+                const categoryName = currentLang === 'en' && cat.name_en ? cat.name_en : cat.name;
+                return `<option value="${cat.id}">${categoryName}</option>`;
+            }).join('');
     } catch (error) {
         console.error('加载分类筛选器失败:', error);
     }
@@ -450,7 +566,34 @@ function changePage(page) {
 async function showProductDetails(productId) {
     try {
         showLoading();
-        const product = await api.getProduct(productId);
+        
+        // 获取当前语言
+        const currentLang = window.i18n ? window.i18n.getCurrentLanguage() : 'zh';
+        
+        let product;
+        if (currentLang === 'en') {
+            // 使用英文API
+            const response = await fetch(`${api.baseURL}/language/en/products/${productId}`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const responseData = await response.json();
+            if (responseData.success && responseData.data) {
+                product = responseData.data;
+            } else {
+                throw new Error('Invalid API response format');
+            }
+        } else {
+            // 使用中文API
+            product = await api.getProduct(productId);
+        }
+        
         renderProductModal(product);
         document.getElementById('product-modal').style.display = 'block';
     } catch (error) {
@@ -466,8 +609,46 @@ function renderProductModal(product) {
     const container = document.getElementById('product-details');
     if (!container) return;
     
-    const productName = product.name || '未知产品';
-    const productDescription = product.description || '暂无描述';
+    // 获取当前语言
+    const currentLang = window.i18n ? window.i18n.getCurrentLanguage() : 'zh';
+    
+    // 根据语言设置文本
+    const texts = currentLang === 'en' ? {
+        unknownProduct: 'Unknown Product',
+        noDescription: 'No Description',
+        productSpecs: 'Product Specifications',
+        brand: 'Brand',
+        model: 'Model', 
+        color: 'Color',
+        weight: 'Weight',
+        dimensions: 'Dimensions',
+        material: 'Material',
+        warranty: 'Warranty',
+        origin: 'Origin',
+        stock: 'Stock',
+        months: 'months',
+        pieces: 'pieces',
+        kg: 'kg'
+    } : {
+        unknownProduct: '未知产品',
+        noDescription: '暂无描述', 
+        productSpecs: '产品规格',
+        brand: '品牌',
+        model: '型号',
+        color: '颜色',
+        weight: '重量',
+        dimensions: '尺寸',
+        material: '材质',
+        warranty: '保修',
+        origin: '产地',
+        stock: '库存',
+        months: '个月',
+        pieces: '件',
+        kg: 'kg'
+    };
+    
+    const productName = product.name || texts.unknownProduct;
+    const productDescription = product.description || texts.noDescription;
     
     container.innerHTML = `
         <div class="product-detail-image">
@@ -483,18 +664,18 @@ function renderProductModal(product) {
         </div>
         
         <div class="product-specs">
-            <h4>产品规格</h4>
+            <h4>${texts.productSpecs}</h4>
             <div class="spec-grid">
                 ${product.sku ? `<div class="spec-item"><span class="spec-label">SKU:</span><span class="spec-value">${product.sku}</span></div>` : ''}
-                ${product.brand ? `<div class="spec-item"><span class="spec-label">品牌:</span><span class="spec-value">${product.brand}</span></div>` : ''}
-                ${product.model ? `<div class="spec-item"><span class="spec-label">型号:</span><span class="spec-value">${product.model}</span></div>` : ''}
-                ${product.color ? `<div class="spec-item"><span class="spec-label">颜色:</span><span class="spec-value">${product.color}</span></div>` : ''}
-                ${product.weight ? `<div class="spec-item"><span class="spec-label">重量:</span><span class="spec-value">${product.weight}kg</span></div>` : ''}
-                ${product.dimensions ? `<div class="spec-item"><span class="spec-label">尺寸:</span><span class="spec-value">${product.dimensions}</span></div>` : ''}
-                ${product.material ? `<div class="spec-item"><span class="spec-label">材质:</span><span class="spec-value">${product.material}</span></div>` : ''}
-                ${product.warranty_period ? `<div class="spec-item"><span class="spec-label">保修:</span><span class="spec-value">${product.warranty_period}个月</span></div>` : ''}
-                ${product.origin_country ? `<div class="spec-item"><span class="spec-label">产地:</span><span class="spec-value">${product.origin_country}</span></div>` : ''}
-                <div class="spec-item"><span class="spec-label">库存:</span><span class="spec-value">${product.stock_quantity || 0}件</span></div>
+                ${product.brand ? `<div class="spec-item"><span class="spec-label">${texts.brand}:</span><span class="spec-value">${product.brand}</span></div>` : ''}
+                ${product.model ? `<div class="spec-item"><span class="spec-label">${texts.model}:</span><span class="spec-value">${product.model}</span></div>` : ''}
+                ${product.color ? `<div class="spec-item"><span class="spec-label">${texts.color}:</span><span class="spec-value">${product.color}</span></div>` : ''}
+                ${product.weight ? `<div class="spec-item"><span class="spec-label">${texts.weight}:</span><span class="spec-value">${product.weight}${texts.kg}</span></div>` : ''}
+                ${product.dimensions ? `<div class="spec-item"><span class="spec-label">${texts.dimensions}:</span><span class="spec-value">${product.dimensions}</span></div>` : ''}
+                ${product.material ? `<div class="spec-item"><span class="spec-label">${texts.material}:</span><span class="spec-value">${product.material}</span></div>` : ''}
+                ${product.warranty_period ? `<div class="spec-item"><span class="spec-label">${texts.warranty}:</span><span class="spec-value">${product.warranty_period}${texts.months}</span></div>` : ''}
+                ${product.origin_country ? `<div class="spec-item"><span class="spec-label">${texts.origin}:</span><span class="spec-value">${product.origin_country}</span></div>` : ''}
+                <div class="spec-item"><span class="spec-label">${texts.stock}:</span><span class="spec-value">${product.stock_quantity || product.stock || 0}${texts.pieces}</span></div>
             </div>
         </div>
     `;

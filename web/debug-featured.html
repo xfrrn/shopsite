@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>特色产品调试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .debug-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .error { color: red; }
+        .success { color: green; }
+        #featured-products { border: 2px dashed #ccc; min-height: 200px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>特色产品调试页面</h1>
+    
+    <div class="debug-section">
+        <h2>1. 测试i18n</h2>
+        <button onclick="testI18n()">测试i18n功能</button>
+        <div id="i18n-result"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>2. 测试API</h2>
+        <button onclick="testAPI()">测试中文API</button>
+        <button onclick="testEnAPI()">测试英文API</button>
+        <div id="api-result"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>3. 特色产品容器</h2>
+        <div id="featured-products">
+            <!-- 特色产品将在这里显示 -->
+        </div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>4. 测试特色产品类</h2>
+        <button onclick="testFeaturedProducts()">初始化特色产品</button>
+        <div id="fp-result"></div>
+    </div>
+
+    <!-- 包含必要的脚本 -->
+    <script src="js/i18n.js"></script>
+    <script src="js/featured-products.js"></script>
+    
+    <script>
+        function testI18n() {
+            const result = document.getElementById('i18n-result');
+            try {
+                result.innerHTML = `
+                    <p>window.i18n存在: ${!!window.i18n}</p>
+                    <p>当前语言: ${window.i18n ? window.i18n.getCurrentLanguage() : 'N/A'}</p>
+                    <p>featured.title: ${window.i18n ? window.i18n.t('featured.title') : 'N/A'}</p>
+                    <p>featured.subtitle: ${window.i18n ? window.i18n.t('featured.subtitle') : 'N/A'}</p>
+                `;
+            } catch (e) {
+                result.innerHTML = `<p class="error">错误: ${e.message}</p>`;
+            }
+        }
+
+        async function testAPI() {
+            const result = document.getElementById('api-result');
+            try {
+                const response = await fetch('/api/featured-products/');
+                const data = await response.json();
+                result.innerHTML = `<p class="success">中文API成功，数据: ${JSON.stringify(data, null, 2)}</p>`;
+            } catch (e) {
+                result.innerHTML = `<p class="error">中文API错误: ${e.message}</p>`;
+            }
+        }
+
+        async function testEnAPI() {
+            const result = document.getElementById('api-result');
+            try {
+                const response = await fetch('/api/language/en/featured-products');
+                const data = await response.json();
+                result.innerHTML = `<p class="success">英文API成功，数据: ${JSON.stringify(data, null, 2)}</p>`;
+            } catch (e) {
+                result.innerHTML = `<p class="error">英文API错误: ${e.message}</p>`;
+            }
+        }
+
+        function testFeaturedProducts() {
+            const result = document.getElementById('fp-result');
+            try {
+                result.innerHTML = `<p>window.FeaturedProducts存在: ${!!window.FeaturedProducts}</p>`;
+                
+                if (window.FeaturedProducts) {
+                    const fp = new window.FeaturedProducts();
+                    fp.init();
+                    result.innerHTML += `<p class="success">特色产品类初始化成功</p>`;
+                } else {
+                    result.innerHTML += `<p class="error">FeaturedProducts类不存在</p>`;
+                }
+            } catch (e) {
+                result.innerHTML += `<p class="error">错误: ${e.message}</p>`;
+                console.error('详细错误:', e);
+            }
+        }
+
+        // 页面加载后自动测试
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('调试页面加载完成');
+            testI18n();
+        });
+    </script>
+</body>
+</html>

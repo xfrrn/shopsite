@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>直接测试按钮文本</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-area { margin: 15px 0; padding: 10px; border: 1px solid #ddd; }
+        button { margin: 5px; padding: 5px 10px; }
+    </style>
+</head>
+<body>
+    <h1>直接测试按钮文本功能</h1>
+    
+    <div class="test-area">
+        <h3>1. 测试i18n加载</h3>
+        <button onclick="testI18n()">测试i18n</button>
+        <div id="i18n-result"></div>
+    </div>
+    
+    <div class="test-area">
+        <h3>2. 测试FeaturedProducts加载</h3>
+        <button onclick="testFeaturedProducts()">测试FeaturedProducts</button>
+        <div id="fp-result"></div>
+    </div>
+    
+    <div class="test-area">
+        <h3>3. 测试按钮文本生成</h3>
+        <button onclick="testButtonText('zh')">测试中文</button>
+        <button onclick="testButtonText('en')">测试英文</button>
+        <div id="button-result"></div>
+    </div>
+
+    <script src="js/i18n.js?v=20250915"></script>
+    <script src="js/featured-products.js?v=20250915"></script>
+    
+    <script>
+        function testI18n() {
+            const result = document.getElementById('i18n-result');
+            result.innerHTML = `
+                <p>i18n exists: ${!!window.i18n}</p>
+                <p>i18n type: ${typeof window.i18n}</p>
+                ${window.i18n ? `
+                    <p>Current lang: ${window.i18n.getCurrentLanguage()}</p>
+                    <p>t function: ${typeof window.i18n.t}</p>
+                ` : ''}
+            `;
+        }
+        
+        function testFeaturedProducts() {
+            const result = document.getElementById('fp-result');
+            result.innerHTML = `
+                <p>FeaturedProducts exists: ${!!window.FeaturedProducts}</p>
+                <p>FeaturedProducts type: ${typeof window.FeaturedProducts}</p>
+            `;
+        }
+        
+        function testButtonText(lang) {
+            const result = document.getElementById('button-result');
+            
+            if (!window.i18n || !window.FeaturedProducts) {
+                result.innerHTML = '<p>Required objects not loaded</p>';
+                return;
+            }
+            
+            try {
+                // 切换语言
+                window.i18n.switchLanguage(lang);
+                
+                // 创建FeaturedProducts实例
+                const fp = new window.FeaturedProducts();
+                
+                // 测试产品
+                const testProduct = {
+                    id: 1,
+                    name: '测试产品',
+                    description: '测试描述',
+                    price: 99.99,
+                    image_url: 'https://via.placeholder.com/200x200'
+                };
+                
+                // 生成卡片HTML
+                const cardHTML = fp.renderSingleProductCard(testProduct, 1);
+                
+                result.innerHTML = `
+                    <h4>Language: ${lang}</h4>
+                    <p>btn.view_details: "${window.i18n.t('btn.view_details')}"</p>
+                    <p>btn.click_view_details: "${window.i18n.t('btn.click_view_details')}"</p>
+                    <h4>Generated Card:</h4>
+                    <div style="border: 1px solid #eee; padding: 10px; max-width: 300px;">
+                        ${cardHTML}
+                    </div>
+                `;
+                
+            } catch (e) {
+                result.innerHTML = `<p>Error: ${e.message}</p>`;
+                console.error(e);
+            }
+        }
+        
+        // 页面加载完成后自动测试
+        setTimeout(() => {
+            testI18n();
+            testFeaturedProducts();
+        }, 500);
+    </script>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>终极调试 - 按钮文本问题</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .debug-box { background: #f8f9fa; border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 8px; }
+        .error { border-color: #dc3545; background: #f8d7da; }
+        .success { border-color: #28a745; background: #d4edda; }
+        .info { border-color: #17a2b8; background: #d1ecf1; }
+        button { margin: 5px; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-test { background: #007bff; color: white; }
+        .product-preview { border: 2px solid #007bff; padding: 15px; margin: 10px 0; border-radius: 8px; }
+        .console-log { font-family: monospace; font-size: 12px; background: #2d3748; color: #e2e8f0; padding: 10px; border-radius: 4px; max-height: 300px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔍 特色产品按钮文本终极调试</h1>
+    
+    <div class="debug-box info">
+        <h3>📋 问题描述</h3>
+        <p>特色产品卡片上的"查看详情"按钮在切换为英文后仍显示中文，需要找出根本原因。</p>
+    </div>
+    
+    <div class="debug-box">
+        <h3>🧪 测试控制</h3>
+        <button class="btn-test" onclick="runFullDiagnosis()">🚀 运行完整诊断</button>
+        <button class="btn-test" onclick="testDirectCall()">📞 直接调用测试</button>
+        <button class="btn-test" onclick="simulateLanguageSwitch()">🔄 模拟语言切换</button>
+    </div>
+    
+    <div id="diagnosis-results">
+        <!-- 诊断结果将显示在这里 -->
+    </div>
+    
+    <div class="debug-box">
+        <h3>🖼️ 实际效果预览</h3>
+        <div id="product-preview" class="product-preview">
+            点击上方按钮开始测试
+        </div>
+    </div>
+    
+    <div class="debug-box">
+        <h3>📊 控制台输出</h3>
+        <div id="console-logs" class="console-log">
+            控制台输出将显示在这里...
+        </div>
+    </div>
+    
+    <!-- 加载实际的脚本文件 -->
+    <script src="js/i18n.js?v=20250915"></script>
+    <script src="js/featured-products.js?v=20250915-debug2"></script>
+    
+    <script>
+        // 拦截所有console输出
+        const logs = [];
+        const originalConsole = {
+            log: console.log,
+            warn: console.warn,
+            error: console.error
+        };
+        
+        ['log', 'warn', 'error'].forEach(method => {
+            console[method] = function(...args) {
+                logs.push({
+                    method,
+                    time: new Date().toLocaleTimeString(),
+                    args: args
+                });
+                updateConsoleLogs();
+                originalConsole[method].apply(console, args);
+            };
+        });
+        
+        function updateConsoleLogs() {
+            const consoleDiv = document.getElementById('console-logs');
+            consoleDiv.innerHTML = logs.map(log => {
+                const color = {
+                    log: '#e2e8f0',
+                    warn: '#fbbf24',
+                    error: '#ef4444'
+                }[log.method];
+                
+                return `<div style="color: ${color}; margin: 2px 0;">
+                    [${log.time}] ${log.method.toUpperCase()}: ${log.args.join(' ')}
+                </div>`;
+            }).join('');
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+        
+        function addResult(html, type = 'info') {
+            const resultsDiv = document.getElementById('diagnosis-results');
+            const classes = {
+                info: 'debug-box info',
+                error: 'debug-box error',
+                success: 'debug-box success'
+            };
+            
+            resultsDiv.innerHTML += `<div class="${classes[type]}">${html}</div>`;
+        }
+        
+        function runFullDiagnosis() {
+            console.log('🔍 开始完整诊断...');
+            
+            // 清空之前的结果
+            document.getElementById('diagnosis-results').innerHTML = '';
+            
+            // 检查1: 基础组件
+            const i18nExists = !!window.i18n;
+            const fpExists = !!window.FeaturedProducts;
+            
+            addResult(`
+                <h3>✅ 第1步: 基础组件检查</h3>
+                <ul>
+                    <li>window.i18n 存在: ${i18nExists ? '✅' : '❌'}</li>
+                    <li>window.FeaturedProducts 存在: ${fpExists ? '✅' : '❌'}</li>
+                </ul>
+            `, i18nExists && fpExists ? 'success' : 'error');
+            
+            if (!i18nExists || !fpExists) {
+                addResult('<h3>❌ 诊断终止</h3><p>基础组件缺失，无法继续测试。</p>', 'error');
+                return;
+            }
+            
+            // 检查2: 翻译数据
+            const currentLang = window.i18n.getCurrentLanguage();
+            const zhBtn = window.i18n.t('btn.view_details');
+            
+            // 切换到英文测试
+            window.i18n.switchLanguage('en');
+            const enBtn = window.i18n.t('btn.view_details');
+            
+            // 恢复原语言
+            window.i18n.switchLanguage(currentLang);
+            
+            addResult(`
+                <h3>✅ 第2步: 翻译数据检查</h3>
+                <ul>
+                    <li>当前语言: ${currentLang}</li>
+                    <li>中文翻译 'btn.view_details': "${zhBtn}"</li>
+                    <li>英文翻译 'btn.view_details': "${enBtn}"</li>
+                    <li>翻译数据完整性: ${zhBtn && enBtn && zhBtn !== enBtn ? '✅' : '❌'}</li>
+                </ul>
+            `, zhBtn && enBtn && zhBtn !== enBtn ? 'success' : 'error');
+            
+            // 检查3: 渲染功能
+            setTimeout(() => {
+                testRenderFunction();
+            }, 100);
+        }
+        
+        function testRenderFunction() {
+            console.log('🧪 测试渲染功能...');
+            
+            try {
+                const fp = new window.FeaturedProducts();
+                const testProduct = {
+                    id: 999,
+                    name: '测试产品',
+                    description: '测试描述',
+                    price: 99.99,
+                    image_url: 'https://via.placeholder.com/200x200?text=Test'
+                };
+                
+                // 测试中文渲染
+                window.i18n.switchLanguage('zh');
+                const zhHTML = fp.renderSingleProductCard(testProduct, 1);
+                const zhBtnMatch = zhHTML.match(/<span class="btn-text">(.*?)<\/span>/);
+                const zhBtnText = zhBtnMatch ? zhBtnMatch[1] : '未找到';
+                
+                // 测试英文渲染
+                window.i18n.switchLanguage('en');
+                const enHTML = fp.renderSingleProductCard(testProduct, 1);
+                const enBtnMatch = enHTML.match(/<span class="btn-text">(.*?)<\/span>/);
+                const enBtnText = enBtnMatch ? enBtnMatch[1] : '未找到';
+                
+                addResult(`
+                    <h3>✅ 第3步: 渲染功能检查</h3>
+                    <ul>
+                        <li>中文渲染按钮文本: "${zhBtnText}"</li>
+                        <li>英文渲染按钮文本: "${enBtnText}"</li>
+                        <li>渲染功能正常: ${zhBtnText === '查看详情' && enBtnText === 'View Details' ? '✅' : '❌'}</li>
+                    </ul>
+                    <details>
+                        <summary>查看详细HTML</summary>
+                        <pre style="background: #f8f9fa; padding: 10px; overflow-x: auto; font-size: 10px;">中文HTML: ${zhHTML.substring(0, 200)}...</pre>
+                        <pre style="background: #f8f9fa; padding: 10px; overflow-x: auto; font-size: 10px;">英文HTML: ${enHTML.substring(0, 200)}...</pre>
+                    </details>
+                `, zhBtnText === '查看详情' && enBtnText === 'View Details' ? 'success' : 'error');
+                
+                // 显示英文版本的预览
+                document.getElementById('product-preview').innerHTML = enHTML;
+                
+                // 恢复中文
+                window.i18n.switchLanguage('zh');
+                
+                // 最终结论
+                const allTestsPassed = (zhBtnText === '查看详情' && enBtnText === 'View Details');
+                addResult(`
+                    <h3>${allTestsPassed ? '🎉 诊断结论: 功能正常' : '⚠️ 诊断结论: 存在问题'}</h3>
+                    <p>${allTestsPassed ? 
+                        '按钮文本多语言功能运行正常。如果在实际网页中仍显示问题，可能是缓存问题。请尝试强制刷新 (Ctrl+F5) 或清除浏览器缓存。' : 
+                        '按钮文本多语言功能存在问题，需要进一步排查代码逻辑。'
+                    }</p>
+                `, allTestsPassed ? 'success' : 'error');
+                
+            } catch (e) {
+                addResult(`
+                    <h3>❌ 渲染测试失败</h3>
+                    <p>错误信息: ${e.message}</p>
+                    <pre style="background: #f8f9fa; padding: 10px; font-size: 12px;">${e.stack}</pre>
+                `, 'error');
+            }
+        }
+        
+        function testDirectCall() {
+            console.log('📞 直接调用测试...');
+            runFullDiagnosis();
+        }
+        
+        function simulateLanguageSwitch() {
+            console.log('🔄 模拟语言切换...');
+            
+            if (!window.i18n) {
+                addResult('<h3>❌ 语言切换失败</h3><p>i18n对象不存在</p>', 'error');
+                return;
+            }
+            
+            const originalLang = window.i18n.getCurrentLanguage();
+            const targetLang = originalLang === 'zh' ? 'en' : 'zh';
+            
+            addResult(`
+                <h3>🔄 语言切换测试</h3>
+                <p>从 ${originalLang} 切换到 ${targetLang}</p>
+            `);
+            
+            // 执行切换
+            window.i18n.switchLanguage(targetLang).then(() => {
+                console.log('语言切换完成，重新运行诊断...');
+                setTimeout(runFullDiagnosis, 200);
+            });
+        }
+        
+        // 页面加载完成后自动运行诊断
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                console.log('🚀 页面加载完成，开始自动诊断...');
+                runFullDiagnosis();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

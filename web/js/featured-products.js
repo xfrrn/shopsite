@@ -30,11 +30,34 @@ class FeaturedProducts {
     async loadFeaturedProducts() {
         try {
             console.log('🔄 开始加载特色产品数据...');
-            const response = await fetch('/api/featured-products/');
+            
+            // 获取当前语言
+            const currentLang = window.i18n ? window.i18n.getCurrentLanguage() : 'zh';
+            
+            let response;
+            if (currentLang === 'en') {
+                response = await fetch('/api/language/en/featured-products');
+            } else {
+                response = await fetch('/api/featured-products/');
+            }
+            
             console.log('📡 API响应状态:', response.status);
             
             if (response.ok) {
-                this.featuredProducts = await response.json();
+                const responseData = await response.json();
+                
+                // 获取当前语言
+                const currentLang = window.i18n ? window.i18n.getCurrentLanguage() : 'zh';
+                
+                // 处理不同的响应格式
+                if (currentLang === 'en' && responseData.success && responseData.data) {
+                    // 多语言API返回格式: {success: true, data: [...]}
+                    this.featuredProducts = responseData.data;
+                } else {
+                    // 普通API返回格式: [...]
+                    this.featuredProducts = responseData;
+                }
+                
                 console.log('📦 获取到特色产品数据:', this.featuredProducts);
                 console.log('📊 特色产品数量:', this.featuredProducts.length);
                 
@@ -89,8 +112,8 @@ class FeaturedProducts {
             <section class="featured-products-section">
                 <div class="container">
                     <div class="section-header">
-                        <h2 class="section-title">特色产品</h2>
-                        <p class="section-subtitle">精选优质商品，为您推荐</p>
+                        <h2 class="section-title" data-i18n="featured.title">特色产品</h2>
+                        <p class="section-subtitle" data-i18n="featured.subtitle">精选优质商品，为您推荐</p>
                     </div>
                     <div class="products-grid">
         `;
@@ -138,6 +161,53 @@ class FeaturedProducts {
         const productPrice = product.price || 0;
         const productDescription = product.description || '暂无描述';
         
+        // 获取翻译文本 - 强制检查当前语言
+        let btnText = '查看详情';
+        let overlayText = '点击查看详情';
+        
+        // 直接检查URL或其他方式确定当前语言
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlLang = urlParams.get('lang');
+        let currentLang = 'zh';
+        
+        if (window.i18n && typeof window.i18n.getCurrentLanguage === 'function') {
+            currentLang = window.i18n.getCurrentLanguage();
+        }
+        
+        // 如果检测到英文环境，强制使用英文文本
+        if (currentLang === 'en' || urlLang === 'en' || 
+            document.documentElement.lang === 'en' ||
+            localStorage.getItem('language') === 'en') {
+            btnText = 'View Details';
+            overlayText = 'Click to View Details';
+        }
+        
+        console.log('🔧 [DEBUG] renderSingleProductCard 被调用 - 产品ID:', product.id);
+        console.log('🔧 [DEBUG] window.i18n 存在:', !!window.i18n);
+        
+        try {
+            if (window.i18n && typeof window.i18n.t === 'function') {
+                const currentLang = window.i18n.getCurrentLanguage();
+                console.log('🔧 [DEBUG] 当前语言:', currentLang);
+                
+                const originalBtnText = btnText;
+                const originalOverlayText = overlayText;
+                
+                btnText = window.i18n.t('btn.view_details') || btnText;
+                overlayText = window.i18n.t('btn.click_view_details') || overlayText;
+                
+                console.log('🔧 [DEBUG] 原始按钮文本:', originalBtnText);
+                console.log('🔧 [DEBUG] 翻译后按钮文本:', btnText);
+                console.log('🔧 [DEBUG] 原始悬停文本:', originalOverlayText);
+                console.log('🔧 [DEBUG] 翻译后悬停文本:', overlayText);
+                console.log('🔧 [DEBUG] 翻译是否成功:', btnText !== originalBtnText);
+            } else {
+                console.log('🔧 [DEBUG] i18n 不可用，使用默认文本');
+            }
+        } catch (e) {
+            console.warn('🔧 [DEBUG] 获取按钮翻译文本失败，使用默认文本:', e);
+        }
+        
         // 简化图片处理 - 如果没有图片就显示文字
         const imageUrl = product.image_url;
         
@@ -155,7 +225,7 @@ class FeaturedProducts {
                         </div>`
                     }
                     <div class="product-overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0); transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; border-radius: 8px;">
-                        <span style="opacity: 0; transition: opacity 0.3s ease;">点击查看详情</span>
+                        <span style="opacity: 0; transition: opacity 0.3s ease;">${overlayText}</span>
                     </div>
                 </div>
                 <div class="product-info">
@@ -163,7 +233,7 @@ class FeaturedProducts {
                     <p class="product-description">${productDescription}</p>
                     <div class="product-price">¥${productPrice}</div>
                     <button class="product-btn modern-btn" onclick="event.stopPropagation(); showProductDetails(${product.id})">
-                        <span class="btn-text">查看详情</span>
+                        <span class="btn-text">${btnText}</span>
                         <span class="btn-icon">
                             <i class="fas fa-arrow-right"></i>
                         </span>

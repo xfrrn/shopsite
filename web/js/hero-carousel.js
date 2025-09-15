@@ -23,11 +23,25 @@ class HeroCarousel {
 
     async loadBackgroundImages() {
         try {
-            const response = await fetch('/api/background-images/', {
-                headers: {
-                    'Accept-Language': 'zh-CN'
-                }
-            });
+            // 获取当前语言
+            const currentLang = window.i18n ? window.i18n.getCurrentLanguage() : 'zh';
+            
+            let response;
+            if (currentLang === 'en') {
+                // 使用英文API
+                response = await fetch('/api/language/en/background-images', {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+            } else {
+                // 使用中文API
+                response = await fetch('/api/background-images/', {
+                    headers: {
+                        'Accept-Language': 'zh-CN'
+                    }
+                });
+            }
 
             if (response.ok) {
                 const data = await response.json();
@@ -56,35 +70,69 @@ class HeroCarousel {
         // 如果没有背景图，创建默认背景
         if (this.slides.length === 0) {
             console.log('没有背景图，创建默认背景');
-            this.slides = [
-                {
-                    id: 'default-1',
-                    title: '欢迎来到我们的产品展示',
-                    subtitle: '发现优质产品，体验卓越品质',
-                    button_text: '浏览产品',
-                    button_link: '#products',
-                    image_url: null,
-                    is_active: true
-                },
-                {
-                    id: 'default-2',
-                    title: '精选优质商品',
-                    subtitle: '为您提供最好的购物体验',
-                    button_text: '立即购买',
-                    button_link: '#products',
-                    image_url: null,
-                    is_active: true
-                },
-                {
-                    id: 'default-3',
-                    title: '品质保证',
-                    subtitle: '严格品控，只为您的满意',
-                    button_text: '了解更多',
-                    button_link: '#products',
-                    image_url: null,
-                    is_active: true
-                }
-            ];
+            const currentLang = window.i18n ? window.i18n.getCurrentLanguage() : 'zh';
+            
+            if (currentLang === 'en') {
+                this.slides = [
+                    {
+                        id: 'default-1',
+                        title: 'Welcome to Our Product Showcase',
+                        subtitle: 'Discover Quality Products, Experience Excellence',
+                        button_text: 'Browse Products',
+                        button_link: '#products',
+                        image_url: null,
+                        is_active: true
+                    },
+                    {
+                        id: 'default-2',
+                        title: 'Premium Selected Products',
+                        subtitle: 'Providing You with the Best Shopping Experience',
+                        button_text: 'Shop Now',
+                        button_link: '#products',
+                        image_url: null,
+                        is_active: true
+                    },
+                    {
+                        id: 'default-3',
+                        title: 'Quality Guaranteed',
+                        subtitle: 'Strict Quality Control, Just for Your Satisfaction',
+                        button_text: 'Learn More',
+                        button_link: '#products',
+                        image_url: null,
+                        is_active: true
+                    }
+                ];
+            } else {
+                this.slides = [
+                    {
+                        id: 'default-1',
+                        title: '欢迎来到我们的产品展示',
+                        subtitle: '发现优质产品，体验卓越品质',
+                        button_text: '浏览产品',
+                        button_link: '#products',
+                        image_url: null,
+                        is_active: true
+                    },
+                    {
+                        id: 'default-2',
+                        title: '精选优质商品',
+                        subtitle: '为您提供最好的购物体验',
+                        button_text: '立即购买',
+                        button_link: '#products',
+                        image_url: null,
+                        is_active: true
+                    },
+                    {
+                        id: 'default-3',
+                        title: '品质保证',
+                        subtitle: '严格品控，只为您的满意',
+                        button_text: '了解更多',
+                        button_link: '#products',
+                        image_url: null,
+                        is_active: true
+                    }
+                ];
+            }
         }
 
         console.log('创建轮播图片，共', this.slides.length, '张');

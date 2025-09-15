@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商城首页 - 硬刷新测试</title>
+    <!-- 强制刷新缓存的版本 -->
+    <link rel="stylesheet" href="css/featured-products.css?v=20250915">
+    <link rel="stylesheet" href="css/style.css?v=20250915">
+</head>
+<body>
+    <h1>特色产品按钮文本测试页面</h1>
+    <p>这个页面用于测试按钮文本的多语言切换功能</p>
+    
+    <!-- 语言切换按钮 -->
+    <div style="margin: 20px 0;">
+        <button id="lang-zh" style="margin-right: 10px; padding: 8px 15px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">中文</button>
+        <button id="lang-en" style="padding: 8px 15px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">English</button>
+    </div>
+    
+    <!-- 特色产品区域 -->
+    <div id="featured-products">
+        <!-- 特色产品将在这里显示 -->
+    </div>
+    
+    <!-- 调试信息 -->
+    <div id="debug-info" style="margin-top: 20px; padding: 10px; background: #f8f9fa; border-radius: 4px; font-size: 12px;">
+        <strong>调试信息:</strong><br>
+    </div>
+
+    <!-- JavaScript文件，强制刷新缓存 -->
+    <script src="js/i18n.js?v=20250915&refresh=true"></script>
+    <script src="js/featured-products.js?v=20250915&refresh=true"></script>
+    
+    <script>
+        function log(msg) {
+            const debugDiv = document.getElementById('debug-info');
+            debugDiv.innerHTML += new Date().toLocaleTimeString() + ': ' + msg + '<br>';
+            console.log('DEBUG:', msg);
+        }
+        
+        let currentFP = null;
+        
+        function switchLang(lang) {
+            log('切换语言到: ' + lang);
+            
+            // 更新按钮状态
+            document.getElementById('lang-zh').style.background = lang === 'zh' ? '#007bff' : '#6c757d';
+            document.getElementById('lang-en').style.background = lang === 'en' ? '#007bff' : '#6c757d';
+            
+            if (window.i18n) {
+                window.i18n.switchLanguage(lang).then(() => {
+                    log('语言切换完成: ' + lang);
+                    log('btn.view_details: ' + window.i18n.t('btn.view_details'));
+                    
+                    // 重新加载特色产品
+                    if (currentFP) {
+                        currentFP.loadFeaturedProducts();
+                    }
+                });
+            } else {
+                log('错误: i18n对象不存在');
+            }
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                log('页面加载完成，开始初始化');
+                log('i18n存在: ' + !!window.i18n);
+                log('FeaturedProducts存在: ' + !!window.FeaturedProducts);
+                
+                if (window.FeaturedProducts) {
+                    currentFP = new window.FeaturedProducts();
+                    currentFP.init();
+                    log('FeaturedProducts初始化完成');
+                } else {
+                    log('错误: FeaturedProducts类不存在');
+                }
+                
+                if (window.i18n) {
+                    log('当前语言: ' + window.i18n.getCurrentLanguage());
+                    log('btn.view_details翻译: ' + window.i18n.t('btn.view_details'));
+                }
+            }, 1000);
+        });
+        
+        // 绑定语言切换按钮
+        document.getElementById('lang-zh').onclick = () => switchLang('zh');
+        document.getElementById('lang-en').onclick = () => switchLang('en');
+    </script>
+</body>
+</html>
