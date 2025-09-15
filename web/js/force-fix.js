@@ -216,7 +216,8 @@
     setTimeout(executeAllFixes, 500);
     setTimeout(executeAllFixes, 1000);
     
-    // 监听样式变化，重新应用修复
+    // 监听样式变化，重新应用修复 - 已禁用以避免无限循环
+    /*
     const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
@@ -239,6 +240,8 @@
         });
         console.log(`🔍 开始监听 ${elements.length} 个关键元素的样式变化`);
     }, 100);
+    */
+    console.log('💡 MutationObserver已禁用以避免无限循环');
     
     // 导航栏透明度滚动效果
     function initNavbarTransparency() {
@@ -301,7 +304,12 @@
     }
     
     // 强制设置导航栏文字颜色
+    let lastNavbarColorFix = 0;
     function forceNavbarTextColors() {
+        // 限制频繁调用，避免过多日志
+        const now = Date.now();
+        const isFrequentCall = now - lastNavbarColorFix < 100;
+        
         // 强制Logo颜色
         const navLogo = document.querySelector('.nav-logo h2');
         if (navLogo) {
@@ -322,10 +330,16 @@
             bar.style.setProperty('background', '#495057', 'important');
         });
         
-        // 处理公司标志
-        initCompanyLogo();
+        // 处理公司标志（只在初次调用时）
+        if (!isFrequentCall) {
+            initCompanyLogo();
+        }
         
-        console.log('💪 导航栏文字颜色强制设置为深色');
+        // 只在非频繁调用时输出日志
+        if (!isFrequentCall) {
+            console.log('💪 导航栏文字颜色强制设置为深色');
+            lastNavbarColorFix = now;
+        }
     }
     
     // 初始化公司标志

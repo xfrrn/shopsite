@@ -34,6 +34,7 @@ window.loadFeaturedProducts = function() {
 window.clearDataCache = clearDataCache;
 window.loadCategories = loadCategories;
 window.loadProducts = loadProducts;
+window.refreshProducts = refreshProducts;
 
 // DOM加载完成后执行
 document.addEventListener('DOMContentLoaded', function() {
@@ -308,6 +309,43 @@ function getCategoryIcon(categoryName) {
     };
     
     return iconMap[categoryName] || 'box';
+}
+
+// 刷新产品（用于刷新按钮）
+async function refreshProducts() {
+    try {
+        // 清除产品缓存
+        productsCache = null;
+        productsCacheTime = 0;
+        
+        // 显示加载状态
+        const refreshBtn = document.querySelector('.view-all-btn');
+        const icon = refreshBtn?.querySelector('i');
+        const originalIcon = icon?.className;
+        
+        if (icon) {
+            icon.className = 'fas fa-spinner fa-spin';
+        }
+        
+        // 重新加载产品
+        await loadProducts();
+        
+        // 恢复按钮状态
+        if (icon && originalIcon) {
+            icon.className = originalIcon;
+        }
+        
+        console.log('产品数据已刷新');
+    } catch (error) {
+        console.error('刷新产品失败:', error);
+        
+        // 恢复按钮状态
+        const refreshBtn = document.querySelector('.view-all-btn');
+        const icon = refreshBtn?.querySelector('i');
+        if (icon) {
+            icon.className = 'fas fa-sync-alt';
+        }
+    }
 }
 
 // 加载产品
