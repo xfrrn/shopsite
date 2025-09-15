@@ -14,21 +14,27 @@
     visibility: visible !important;
 }
 
-/* 强制显示导航栏 - 透明版本 */
+/* 强制显示导航栏 - 半透明背景版本 */
 .navbar {
-    background: transparent !important;
-    box-shadow: none !important;
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    border-bottom: none !important;
+    background: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
     position: fixed !important;
-    top: 0 !important;
+    top: 40px !important; /* 位于顶部信息栏下方 */
     width: 100% !important;
     z-index: 1000 !important;
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
     transition: all 0.3s ease !important;
+}
+
+/* 当顶部信息栏隐藏时，导航栏回到顶部 */
+.top-info-bar.hidden ~ .navbar,
+body.top-bar-hidden .navbar {
+    top: 0 !important;
 }
 
 /* 滚动后的导航栏样式 */
@@ -104,10 +110,10 @@
 }
 
 .nav-logo h2 {
-    color: #343a40 !important;
+    color: #2c3e50 !important;
     font-weight: 700 !important;
     margin: 0 !important;
-    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8) !important;
+    text-shadow: none !important;
     transition: all 0.3s ease !important;
 }
 
@@ -124,19 +130,33 @@
 }
 
 .nav-link {
-    color: #495057 !important;
+    color: #34495e !important;
     text-decoration: none !important;
     font-weight: 600 !important;
     transition: all 0.3s ease !important;
     padding: 10px 20px !important;
     border-radius: 8px !important;
-    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8) !important;
+    text-shadow: none !important;
 }
 
 .nav-link:hover {
-    color: #343a40 !important;
-    background: rgba(0, 0, 0, 0.1) !important;
-    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9) !important;
+    color: #2c3e50 !important;
+    background: rgba(52, 152, 219, 0.1) !important;
+    text-shadow: none !important;
+}
+
+/* 语言切换按钮样式优化 */
+.language-btn {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(52, 73, 94, 0.2) !important;
+    color: #34495e !important;
+    text-shadow: none !important;
+}
+
+.language-btn:hover {
+    background: rgba(52, 152, 219, 0.1) !important;
+    border-color: rgba(52, 152, 219, 0.3) !important;
+    color: #2c3e50 !important;
 }
 
 /* 强制显示Hero区域 */
@@ -209,9 +229,15 @@
 
 /* 主内容区域 */
 .main-content {
-    margin-top: 70px !important;
+    margin-top: 110px !important; /* 顶部信息栏40px + 导航栏70px */
     position: relative !important;
     z-index: 1 !important;
+}
+
+/* 当顶部信息栏隐藏时，减少上边距 */
+.top-info-bar.hidden ~ * .main-content,
+body.top-bar-hidden .main-content {
+    margin-top: 70px !important; /* 只有导航栏70px */
 }
 
 /* 快速导航强制显示 */
