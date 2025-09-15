@@ -94,6 +94,7 @@ class BackgroundImage(Base):
     button_text_en = Column(String(100), nullable=True, comment="英文按钮文本")
     button_text_zh = Column(String(100), nullable=True, comment="中文按钮文本")
     button_link = Column(String(500), nullable=True, comment="按钮链接")
+    show_content_box = Column(Boolean, default=True, comment="是否显示文字内容框")
     sort_order = Column(Integer, default=0, comment="排序")
     is_active = Column(Boolean, default=True, comment="是否启用")
     created_at = Column(DateTime(timezone=True), server_default=func.now(), comment="创建时间")

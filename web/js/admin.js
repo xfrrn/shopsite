@@ -150,6 +150,7 @@ function showBackgroundImageModal(backgroundImage = null) {
         document.getElementById('bg-image-url').value = backgroundImage.image_url || '';
         document.getElementById('bg-sort-order').value = backgroundImage.sort_order || 0;
         document.getElementById('bg-is-active').checked = backgroundImage.is_active;
+        document.getElementById('bg-show-content-box').checked = backgroundImage.show_content_box !== false; // 默认为true
         
         // 显示图片预览
         updateImagePreview('bg-image-url');
@@ -157,6 +158,7 @@ function showBackgroundImageModal(backgroundImage = null) {
         title.textContent = '新增背景图';
         form.reset();
         document.getElementById('bg-is-active').checked = true;
+        document.getElementById('bg-show-content-box').checked = true;
         clearImagePreview('bg-image-preview');
     }
     
@@ -284,6 +286,7 @@ async function handleBackgroundImageSubmit(e) {
         button_text_en: document.getElementById('bg-button-text-en').value,
         button_link: document.getElementById('bg-button-link').value,
         image_url: document.getElementById('bg-image-url').value,
+        show_content_box: document.getElementById('bg-show-content-box').checked,
         sort_order: parseInt(document.getElementById('bg-sort-order').value) || 0,
         is_active: document.getElementById('bg-is-active').checked
     };

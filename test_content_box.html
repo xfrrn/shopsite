@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>轮播图文字框控制测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .hero-section {
+            position: relative;
+            height: 500px;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .hero-carousel {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .hero-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            background-color: #333;
+        }
+        
+        .hero-slide.active {
+            opacity: 1;
+        }
+        
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            background: rgba(0,0,0,0.6);
+            padding: 40px;
+            border-radius: 10px;
+            max-width: 500px;
+            transition: all 0.3s ease;
+        }
+        
+        .hero-content.hidden {
+            display: none !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+        }
+        
+        .hero-content h1 {
+            font-size: 2.5em;
+            margin: 0 0 20px 0;
+        }
+        
+        .hero-content p {
+            font-size: 1.2em;
+            margin: 0 0 30px 0;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .cta-button:hover {
+            background: #0056b3;
+        }
+        
+        .test-controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .test-button {
+            margin: 5px;
+            padding: 10px 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .test-button:hover {
+            background: #218838;
+        }
+        
+        .test-button.danger {
+            background: #dc3545;
+        }
+        
+        .test-button.danger:hover {
+            background: #c82333;
+        }
+        
+        .status {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: monospace;
+            white-space: pre-line;
+        }
+        
+        .hero-indicators {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        
+        .hero-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .hero-indicator.active {
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 轮播图文字框控制测试页面</h1>
+    
+    <div class="test-controls">
+        <h3>测试控件</h3>
+        <button class="test-button" onclick="testShowContent()">测试显示文字框</button>
+        <button class="test-button danger" onclick="testHideContent()">测试隐藏文字框</button>
+        <button class="test-button" onclick="testToggleContent()">切换文字框显示</button>
+        <button class="test-button" onclick="simulateCarousel()">模拟轮播切换</button>
+        
+        <div class="status" id="status">状态: 等待测试...</div>
+    </div>
+    
+    <!-- 轮播图测试区域 -->
+    <section class="hero-section">
+        <div class="hero-carousel" id="hero-carousel">
+            <div class="hero-slide active" style="background: linear-gradient(45deg, #ff6b6b, #4ecdc4);"></div>
+            <div class="hero-slide" style="background: linear-gradient(45deg, #a8e6cf, #ffd3a5);"></div>
+        </div>
+        
+        <div class="hero-content" id="hero-content">
+            <h1 id="hero-title">轮播图标题</h1>
+            <p id="hero-subtitle">这是轮播图的描述文字内容</p>
+            <a href="#" id="hero-button" class="cta-button">操作按钮</a>
+        </div>
+        
+        <div class="hero-indicators" id="hero-indicators">
+            <div class="hero-indicator active"></div>
+            <div class="hero-indicator"></div>
+        </div>
+    </section>
+
+    <script>
+        // 模拟轮播图数据
+        const testSlides = [
+            {
+                id: 1,
+                title: "第一张轮播图 - 隐藏文字框",
+                subtitle: "这张图片应该只显示图片，不显示文字内容",
+                button_text: "查看详情",
+                show_content_box: false  // 不显示文字框
+            },
+            {
+                id: 2, 
+                title: "第二张轮播图 - 显示文字框",
+                subtitle: "这张图片会显示文字内容和操作按钮",
+                button_text: "立即购买",
+                show_content_box: true   // 显示文字框
+            }
+        ];
+        
+        let currentSlideIndex = 0;
+        
+        function updateStatus(message) {
+            document.getElementById('status').textContent = message;
+            console.log('测试状态:', message);
+        }
+        
+        function showContentBox(show) {
+            const heroContent = document.getElementById('hero-content');
+            if (heroContent) {
+                if (show) {
+                    heroContent.style.display = '';
+                    heroContent.style.visibility = 'visible';
+                    heroContent.style.opacity = '1';
+                    heroContent.classList.remove('hidden');
+                    updateStatus(`✅ 文字框已显示\n- display: ${heroContent.style.display || 'default'}\n- visibility: ${heroContent.style.visibility}\n- opacity: ${heroContent.style.opacity}`);
+                } else {
+                    heroContent.style.display = 'none';
+                    heroContent.style.visibility = 'hidden';
+                    heroContent.style.opacity = '0';
+                    heroContent.classList.add('hidden');
+                    updateStatus(`❌ 文字框已隐藏\n- display: ${heroContent.style.display}\n- visibility: ${heroContent.style.visibility}\n- opacity: ${heroContent.style.opacity}\n- class: ${heroContent.className}`);
+                }
+            }
+        }
+        
+        function updateContent() {
+            const currentSlide = testSlides[currentSlideIndex];
+            const titleElement = document.getElementById('hero-title');
+            const subtitleElement = document.getElementById('hero-subtitle');
+            const buttonElement = document.getElementById('hero-button');
+            
+            // 更新内容
+            if (titleElement) titleElement.textContent = currentSlide.title;
+            if (subtitleElement) subtitleElement.textContent = currentSlide.subtitle;
+            if (buttonElement) buttonElement.textContent = currentSlide.button_text;
+            
+            // 控制文字框显示/隐藏
+            const showContent = currentSlide.show_content_box === true;
+            showContentBox(showContent);
+            
+            updateStatus(`🔄 内容已更新\n轮播图: ${currentSlideIndex + 1}/${testSlides.length}\n标题: ${currentSlide.title}\nshow_content_box: ${currentSlide.show_content_box}\n显示文字框: ${showContent}`);
+        }
+        
+        function testShowContent() {
+            showContentBox(true);
+        }
+        
+        function testHideContent() {
+            showContentBox(false);
+        }
+        
+        function testToggleContent() {
+            const heroContent = document.getElementById('hero-content');
+            const isVisible = !heroContent.classList.contains('hidden');
+            showContentBox(!isVisible);
+        }
+        
+        function simulateCarousel() {
+            // 切换到下一张
+            currentSlideIndex = (currentSlideIndex + 1) % testSlides.length;
+            
+            // 更新轮播图视觉效果
+            const slides = document.querySelectorAll('.hero-slide');
+            const indicators = document.querySelectorAll('.hero-indicator');
+            
+            slides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlideIndex);
+            });
+            
+            indicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentSlideIndex);
+            });
+            
+            // 更新内容
+            updateContent();
+        }
+        
+        // 页面加载时初始化
+        window.addEventListener('load', () => {
+            updateStatus('🎉 测试页面已加载，准备测试...');
+            updateContent();
+        });
+    </script>
+</body>
+</html>

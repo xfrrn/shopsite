@@ -324,7 +324,8 @@ class HeroCarousel {
 
     updateContent() {
         if (this.slides.length === 0) {
-            // 使用默认内容
+            // 没有数据时隐藏文字框
+            this.showContentBox(false);
             return;
         }
 
@@ -332,6 +333,11 @@ class HeroCarousel {
         const titleElement = document.getElementById('hero-title');
         const subtitleElement = document.getElementById('hero-subtitle');
         const buttonElement = document.getElementById('hero-button');
+        
+        // 控制文字框显示/隐藏 - 明确检查字段值
+        const showContent = currentSlide.show_content_box === true;
+        console.log(`轮播图 ${this.currentSlideIndex + 1}:`, currentSlide.title, '- 显示文字框:', showContent);
+        this.showContentBox(showContent);
 
         if (titleElement && currentSlide.title) {
             titleElement.textContent = currentSlide.title;
@@ -345,6 +351,27 @@ class HeroCarousel {
             buttonElement.textContent = currentSlide.button_text;
             if (currentSlide.button_link) {
                 buttonElement.href = currentSlide.button_link;
+            }
+        }
+    }
+    
+    showContentBox(show) {
+        const heroContent = document.getElementById('hero-content');
+        if (heroContent) {
+            if (show) {
+                // 显示文字框
+                heroContent.style.display = 'block';
+                heroContent.style.visibility = 'visible';
+                heroContent.style.opacity = '1';
+                heroContent.classList.add('show');
+                heroContent.classList.remove('hidden');
+            } else {
+                // 隐藏文字框
+                heroContent.style.display = 'none';
+                heroContent.style.visibility = 'hidden';
+                heroContent.style.opacity = '0';
+                heroContent.classList.remove('show');
+                heroContent.classList.add('hidden');
             }
         }
     }

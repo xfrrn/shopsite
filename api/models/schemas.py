@@ -166,6 +166,7 @@ class BackgroundImageBase(BaseModel):
     button_text_en: Optional[str] = Field(None, max_length=100, description="英文按钮文本")
     button_text_zh: Optional[str] = Field(None, max_length=100, description="中文按钮文本")
     button_link: Optional[str] = Field(None, max_length=500, description="按钮链接")
+    show_content_box: Optional[bool] = Field(True, description="是否显示文字内容框")
     sort_order: Optional[int] = Field(0, description="排序")
     is_active: Optional[bool] = Field(True, description="是否启用")
 
@@ -181,6 +182,7 @@ class BackgroundImageCreate(BaseModel):
     button_text_en: Optional[str] = Field(None, max_length=100, description="英文按钮文本")
     button_text_zh: Optional[str] = Field(None, max_length=100, description="中文按钮文本")
     button_link: Optional[str] = Field(None, max_length=500, description="按钮链接")
+    show_content_box: Optional[bool] = Field(True, description="是否显示文字内容框")
     sort_order: Optional[int] = Field(0, description="排序")
     is_active: Optional[bool] = Field(True, description="是否启用")
 
@@ -196,6 +198,7 @@ class BackgroundImageUpdate(BaseModel):
     button_text_en: Optional[str] = Field(None, max_length=100)
     button_text_zh: Optional[str] = Field(None, max_length=100)
     button_link: Optional[str] = Field(None, max_length=500)
+    show_content_box: Optional[bool] = None
     sort_order: Optional[int] = None
     is_active: Optional[bool] = None
 

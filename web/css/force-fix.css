@@ -1,5 +1,19 @@
 /* 强制修复样式 - 最高优先级 */
 
+/* 轮播图文字框默认隐藏 - 等待JavaScript控制显示 */
+.hero-content {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* 当JavaScript设置显示时 */
+.hero-content.show {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
 /* 强制显示导航栏 - 透明版本 */
 .navbar {
     background: transparent !important;

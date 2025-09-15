@@ -112,7 +112,7 @@ class FeaturedProducts {
             <section class="featured-products-section">
                 <div class="container">
                     <div class="section-header">
-                        <h2 class="section-title" data-i18n="featured.title">特色产品</h2>
+                        <h2 class="section-title" data-i18n="featured.title">应用分类</h2>
                         <p class="section-subtitle" data-i18n="featured.subtitle">精选优质商品，为您推荐</p>
                     </div>
                     <div class="products-grid">
@@ -295,7 +295,7 @@ class FeaturedProducts {
         container.innerHTML = `
             <section class="featured-products-section">
                 <div class="container">
-                    <h2 class="section-title" data-translate="featured_products">特色产品</h2>
+                    <h2 class="section-title" data-translate="featured_products">应用分类</h2>
                     <div class="empty-state">
                         <div class="empty-icon">🛍️</div>
                         <h3>暂无特色产品</h3>
