@@ -156,3 +156,43 @@ class TopInfoBar(Base):
     
     def __repr__(self):
         return f"<TopInfoBar(id={self.id}, phone='{self.phone}')>"
+
+class FooterInfo(Base):
+    __tablename__ = "footer_info"
+    
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    # 关于我们部分
+    about_title = Column(String(255), default="关于我们", comment="关于我们标题")
+    about_title_en = Column(String(255), default="About Us", comment="关于我们标题(英文)")
+    about_content = Column(Text, nullable=True, comment="关于我们内容")
+    about_content_en = Column(Text, nullable=True, comment="关于我们内容(英文)")
+    
+    # 联系我们部分
+    contact_title = Column(String(255), default="联系我们", comment="联系我们标题")
+    contact_title_en = Column(String(255), default="Contact Us", comment="联系我们标题(英文)")
+    contact_email = Column(String(100), nullable=True, comment="联系邮箱")
+    contact_phone = Column(String(50), nullable=True, comment="联系电话")
+    contact_address = Column(String(255), nullable=True, comment="联系地址")
+    contact_address_en = Column(String(255), nullable=True, comment="联系地址(英文)")
+    
+    # 社交媒体部分
+    social_title = Column(String(255), default="关注我们", comment="社交媒体标题")
+    social_title_en = Column(String(255), default="Follow Us", comment="社交媒体标题(英文)")
+    wechat_url = Column(String(500), nullable=True, comment="微信链接")
+    weibo_url = Column(String(500), nullable=True, comment="微博链接")
+    github_url = Column(String(500), nullable=True, comment="GitHub链接")
+    
+    # 快速链接部分
+    quick_links_title = Column(String(255), default="快速链接", comment="快速链接标题")
+    quick_links_title_en = Column(String(255), default="Quick Links", comment="快速链接标题(英文)")
+    
+    # 版权信息
+    copyright_text = Column(String(255), nullable=True, comment="版权信息")
+    copyright_text_en = Column(String(255), nullable=True, comment="版权信息(英文)")
+    
+    is_active = Column(Boolean, default=True, comment="是否启用")
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), comment="创建时间")
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now(), comment="更新时间")
+    
+    def __repr__(self):
+        return f"<FooterInfo(id={self.id}, about_title='{self.about_title}')>"

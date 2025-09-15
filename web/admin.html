@@ -87,6 +87,11 @@
                     </a>
                 </li>
                 <li>
+                    <a href="#footer-info" class="menu-item" data-section="footer-info">
+                        <i class="fas fa-shoe-prints"></i> 页脚管理
+                    </a>
+                </li>
+                <li>
                     <a href="#uploads" class="menu-item" data-section="uploads">
                         <i class="fas fa-upload"></i> 文件上传
                     </a>
@@ -448,6 +453,185 @@
                                 <div class="preview-social-icons" id="preview-social-icons">
                                     <!-- 社交图标将动态生成 -->
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 页脚信息管理 -->
+                <section id="footer-info-section" class="section">
+                    <h2>
+                        <i class="fas fa-shoe-prints"></i> 页脚信息管理
+                    </h2>
+                    
+                    <div class="form-container">
+                        <form id="footer-info-form">
+                            <!-- 关于我们部分 -->
+                            <div class="form-section">
+                                <h3>关于我们</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="footer-about-title">标题（中文）</label>
+                                        <input type="text" id="footer-about-title" placeholder="关于我们" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="footer-about-title-en">标题（英文）</label>
+                                        <input type="text" id="footer-about-title-en" placeholder="About Us">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="footer-about-content">内容（中文）</label>
+                                    <textarea id="footer-about-content" rows="4" placeholder="请输入关于我们的内容..." required></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="footer-about-content-en">内容（英文）</label>
+                                    <textarea id="footer-about-content-en" rows="4" placeholder="Please enter About Us content in English..."></textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- 联系我们部分 -->
+                            <div class="form-section">
+                                <h3>联系我们</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="footer-contact-title">标题（中文）</label>
+                                        <input type="text" id="footer-contact-title" placeholder="联系我们" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="footer-contact-title-en">标题（英文）</label>
+                                        <input type="text" id="footer-contact-title-en" placeholder="Contact Us">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="footer-contact-email">联系邮箱</label>
+                                        <input type="email" id="footer-contact-email" placeholder="info@example.com">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="footer-contact-phone">联系电话</label>
+                                        <input type="tel" id="footer-contact-phone" placeholder="+86 123 4567 8900">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="footer-contact-address">联系地址（中文）</label>
+                                        <input type="text" id="footer-contact-address" placeholder="中国，上海市">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="footer-contact-address-en">联系地址（英文）</label>
+                                        <input type="text" id="footer-contact-address-en" placeholder="Shanghai, China">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 社交媒体部分 -->
+                            <div class="form-section">
+                                <h3>社交媒体</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="footer-social-title">标题（中文）</label>
+                                        <input type="text" id="footer-social-title" placeholder="关注我们" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="footer-social-title-en">标题（英文）</label>
+                                        <input type="text" id="footer-social-title-en" placeholder="Follow Us">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="footer-wechat-url">微信链接</label>
+                                        <input type="url" id="footer-wechat-url" placeholder="https://weixin.qq.com/">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="footer-weibo-url">微博链接</label>
+                                        <input type="url" id="footer-weibo-url" placeholder="https://weibo.com/yourname">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="footer-github-url">GitHub链接</label>
+                                        <input type="url" id="footer-github-url" placeholder="https://github.com/yourname">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 快速链接和版权信息 -->
+                            <div class="form-section">
+                                <h3>其他信息</h3>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="footer-quicklinks-title">快速链接标题（中文）</label>
+                                        <input type="text" id="footer-quicklinks-title" placeholder="快速链接" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="footer-quicklinks-title-en">快速链接标题（英文）</label>
+                                        <input type="text" id="footer-quicklinks-title-en" placeholder="Quick Links">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="footer-copyright">版权信息（中文）</label>
+                                        <input type="text" id="footer-copyright" placeholder="© 2024 产品展示网站. 保留所有权利.">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="footer-copyright-en">版权信息（英文）</label>
+                                        <input type="text" id="footer-copyright-en" placeholder="© 2024 Product Showcase Website. All rights reserved.">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary" onclick="previewFooterInfo()">
+                                    <i class="fas fa-eye"></i> 预览效果
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> 保存更改
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- 预览区域 -->
+                    <div class="preview-container" id="footer-info-preview" style="display: none;">
+                        <h3>预览效果</h3>
+                        <div class="footer-preview">
+                            <div class="preview-footer-container">
+                                <div class="preview-footer-column">
+                                    <h4 id="preview-footer-about-title">关于我们</h4>
+                                    <p id="preview-footer-about-content">我们致力于为客户提供高质量的产品和优质的服务体验。</p>
+                                </div>
+                                <div class="preview-footer-column">
+                                    <h4 id="preview-footer-quicklinks-title">快速链接</h4>
+                                    <ul>
+                                        <li><a href="#">首页</a></li>
+                                        <li><a href="#">产品</a></li>
+                                        <li><a href="#">关于我们</a></li>
+                                    </ul>
+                                </div>
+                                <div class="preview-footer-column">
+                                    <h4 id="preview-footer-contact-title">联系我们</h4>
+                                    <ul>
+                                        <li><i class="fas fa-envelope"></i> <span id="preview-footer-email">info@example.com</span></li>
+                                        <li><i class="fas fa-phone"></i> <span id="preview-footer-phone">+86 123 4567 8900</span></li>
+                                        <li><i class="fas fa-map-marker-alt"></i> <span id="preview-footer-address">中国，上海市</span></li>
+                                    </ul>
+                                </div>
+                                <div class="preview-footer-column">
+                                    <h4 id="preview-footer-social-title">关注我们</h4>
+                                    <div class="preview-social-icons" id="preview-footer-socials">
+                                        <!-- 社交图标将动态生成 -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="preview-footer-bottom">
+                                <p id="preview-footer-copyright">© 2024 产品展示网站. 保留所有权利.</p>
                             </div>
                         </div>
                     </div>

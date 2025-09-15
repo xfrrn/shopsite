@@ -526,6 +526,9 @@ function switchSection(sectionName) {
             case 'top-info-bar':
                 loadTopInfoBarData();
                 break;
+            case 'footer-info':
+                loadFooterInfoData();
+                break;
             case 'settings':
                 loadSettingsData();
                 break;
@@ -566,6 +569,9 @@ function bindAdminEvents() {
     
     // 绑定顶部信息栏事件
     bindTopInfoBarEvents();
+    
+    // 初始化页脚信息管理
+    initFooterInfoManagement();
 }
 
 // 加载管理后台数据
@@ -577,7 +583,7 @@ async function loadAdminData() {
         
         // 检查URL hash，如果有则跳转到对应页面，否则默认加载仪表板
         const hash = window.location.hash.substring(1); // 移除#号
-        if (hash && ['dashboard', 'categories', 'products', 'featured-products', 'background-images', 'about-us', 'top-info-bar', 'uploads', 'settings'].includes(hash)) {
+        if (hash && ['dashboard', 'categories', 'products', 'featured-products', 'background-images', 'about-us', 'top-info-bar', 'footer-info', 'uploads', 'settings'].includes(hash)) {
             switchSection(hash);
         } else {
             // 清除hash并默认加载仪表板
@@ -1670,5 +1676,188 @@ function bindTopInfoBarEvents() {
             e.preventDefault();
             saveTopInfoBar();
         });
+    }
+}
+
+// ==================== 页脚信息管理功能 ====================
+
+// 加载页脚信息数据
+async function loadFooterInfoData() {
+    try {
+        console.log('Loading footer info data...');
+        
+        const response = await fetch(`${api.baseURL}/footer-info/`, {
+            headers: {
+                'Authorization': `Bearer ${api.token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Footer info data loaded:', data);
+        
+        // 填充表单
+        populateFooterInfoForm(data);
+
+    } catch (error) {
+        console.error('加载页脚信息数据失败:', error);
+        showToast('加载数据失败: ' + error.message, 'error');
+    }
+}
+
+// 填充页脚信息表单
+function populateFooterInfoForm(data) {
+    document.getElementById('footer-about-title').value = data.about_title || '';
+    document.getElementById('footer-about-title-en').value = data.about_title_en || '';
+    document.getElementById('footer-about-content').value = data.about_content || '';
+    document.getElementById('footer-about-content-en').value = data.about_content_en || '';
+    
+    document.getElementById('footer-contact-title').value = data.contact_title || '';
+    document.getElementById('footer-contact-title-en').value = data.contact_title_en || '';
+    document.getElementById('footer-contact-email').value = data.contact_email || '';
+    document.getElementById('footer-contact-phone').value = data.contact_phone || '';
+    document.getElementById('footer-contact-address').value = data.contact_address || '';
+    document.getElementById('footer-contact-address-en').value = data.contact_address_en || '';
+    
+    document.getElementById('footer-social-title').value = data.social_title || '';
+    document.getElementById('footer-social-title-en').value = data.social_title_en || '';
+    document.getElementById('footer-wechat-url').value = data.wechat_url || '';
+    document.getElementById('footer-weibo-url').value = data.weibo_url || '';
+    document.getElementById('footer-github-url').value = data.github_url || '';
+    
+    document.getElementById('footer-quicklinks-title').value = data.quick_links_title || '';
+    document.getElementById('footer-quicklinks-title-en').value = data.quick_links_title_en || '';
+    document.getElementById('footer-copyright').value = data.copyright_text || '';
+    document.getElementById('footer-copyright-en').value = data.copyright_text_en || '';
+}
+
+// 保存页脚信息数据
+async function saveFooterInfo() {
+    try {
+        const formData = {
+            about_title: document.getElementById('footer-about-title').value,
+            about_title_en: document.getElementById('footer-about-title-en').value,
+            about_content: document.getElementById('footer-about-content').value,
+            about_content_en: document.getElementById('footer-about-content-en').value,
+            
+            contact_title: document.getElementById('footer-contact-title').value,
+            contact_title_en: document.getElementById('footer-contact-title-en').value,
+            contact_email: document.getElementById('footer-contact-email').value || null,
+            contact_phone: document.getElementById('footer-contact-phone').value || null,
+            contact_address: document.getElementById('footer-contact-address').value || null,
+            contact_address_en: document.getElementById('footer-contact-address-en').value || null,
+            
+            social_title: document.getElementById('footer-social-title').value,
+            social_title_en: document.getElementById('footer-social-title-en').value,
+            wechat_url: document.getElementById('footer-wechat-url').value || null,
+            weibo_url: document.getElementById('footer-weibo-url').value || null,
+            github_url: document.getElementById('footer-github-url').value || null,
+            
+            quick_links_title: document.getElementById('footer-quicklinks-title').value,
+            quick_links_title_en: document.getElementById('footer-quicklinks-title-en').value,
+            copyright_text: document.getElementById('footer-copyright').value || null,
+            copyright_text_en: document.getElementById('footer-copyright-en').value || null
+        };
+
+        console.log('Saving footer info data:', formData);
+
+        const response = await fetch(`${api.baseURL}/footer-info/`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${api.token}`
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || `HTTP ${response.status}`);
+        }
+
+        showToast('页脚信息保存成功', 'success');
+
+    } catch (error) {
+        console.error('保存失败:', error);
+        showToast('保存失败: ' + error.message, 'error');
+    }
+}
+
+// 预览页脚信息效果
+function previewFooterInfo() {
+    const preview = document.getElementById('footer-info-preview');
+    
+    // 显示/隐藏预览
+    if (preview.style.display === 'none') {
+        preview.style.display = 'block';
+        
+        // 更新预览内容
+        document.getElementById('preview-footer-about-title').textContent = 
+            document.getElementById('footer-about-title').value || '关于我们';
+        document.getElementById('preview-footer-about-content').textContent = 
+            document.getElementById('footer-about-content').value || '我们致力于为客户提供高质量的产品和优质的服务体验。';
+            
+        document.getElementById('preview-footer-quicklinks-title').textContent = 
+            document.getElementById('footer-quicklinks-title').value || '快速链接';
+            
+        document.getElementById('preview-footer-contact-title').textContent = 
+            document.getElementById('footer-contact-title').value || '联系我们';
+        document.getElementById('preview-footer-email').textContent = 
+            document.getElementById('footer-contact-email').value || 'info@example.com';
+        document.getElementById('preview-footer-phone').textContent = 
+            document.getElementById('footer-contact-phone').value || '+86 123 4567 8900';
+        document.getElementById('preview-footer-address').textContent = 
+            document.getElementById('footer-contact-address').value || '中国，上海市';
+            
+        document.getElementById('preview-footer-social-title').textContent = 
+            document.getElementById('footer-social-title').value || '关注我们';
+        document.getElementById('preview-footer-copyright').textContent = 
+            document.getElementById('footer-copyright').value || '© 2024 产品展示网站. 保留所有权利.';
+            
+        // 更新社交媒体图标
+        const socialsContainer = document.getElementById('preview-footer-socials');
+        socialsContainer.innerHTML = '';
+        
+        const wechatUrl = document.getElementById('footer-wechat-url').value;
+        const weiboUrl = document.getElementById('footer-weibo-url').value;
+        const githubUrl = document.getElementById('footer-github-url').value;
+        
+        if (wechatUrl) {
+            socialsContainer.innerHTML += `<a href="${wechatUrl}"><i class="fab fa-weixin"></i></a>`;
+        }
+        if (weiboUrl) {
+            socialsContainer.innerHTML += `<a href="${weiboUrl}"><i class="fab fa-weibo"></i></a>`;
+        }
+        if (githubUrl) {
+            socialsContainer.innerHTML += `<a href="${githubUrl}"><i class="fab fa-github"></i></a>`;
+        }
+        
+        // 滚动到预览区域
+        preview.scrollIntoView({ behavior: 'smooth' });
+    } else {
+        preview.style.display = 'none';
+    }
+}
+
+// 初始化页脚信息管理
+function initFooterInfoManagement() {
+    console.log('Initializing footer info management...');
+    
+    // 页脚信息表单提交
+    const footerForm = document.getElementById('footer-info-form');
+    if (footerForm) {
+        footerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            saveFooterInfo();
+        });
+    }
+    
+    // 预览页脚按钮
+    const previewBtn = document.getElementById('preview-footer-btn');
+    if (previewBtn) {
+        previewBtn.addEventListener('click', previewFooterInfo);
     }
 }
