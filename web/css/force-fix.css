@@ -24,11 +24,12 @@
     position: fixed !important;
     top: 40px !important; /* 位于顶部信息栏下方 */
     width: 100% !important;
-    z-index: 1000 !important;
+    z-index: 1010 !important; /* 提高z-index确保在最上层 */
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
     transition: all 0.3s ease !important;
+    pointer-events: auto !important; /* 确保可点击 */
 }
 
 /* 当顶部信息栏隐藏时，导航栏回到顶部 */
@@ -70,6 +71,9 @@ body.top-bar-hidden .navbar {
     justify-content: space-between !important;
     align-items: center !important;
     height: 70px !important;
+    position: relative !important;
+    z-index: 1011 !important; /* 确保容器在最上层 */
+    pointer-events: auto !important;
 }
 
 /* 汉堡菜单样式 */
@@ -134,15 +138,22 @@ body.top-bar-hidden .navbar {
     text-decoration: none !important;
     font-weight: 600 !important;
     transition: all 0.3s ease !important;
-    padding: 10px 20px !important;
+    padding: 15px 25px !important; /* 增加点击区域 */
     border-radius: 8px !important;
     text-shadow: none !important;
+    display: inline-block !important;
+    position: relative !important;
+    z-index: 1001 !important; /* 确保在其他元素之上 */
+    cursor: pointer !important;
+    min-height: 20px !important; /* 最小高度确保点击区域 */
 }
 
 .nav-link:hover {
     color: #2c3e50 !important;
-    background: rgba(52, 152, 219, 0.1) !important;
+    background: rgba(52, 152, 219, 0.15) !important;
     text-shadow: none !important;
+    transform: translateY(-1px) !important; /* 微妙的上移效果 */
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2) !important;
 }
 
 /* 语言切换按钮样式优化 */
@@ -151,12 +162,38 @@ body.top-bar-hidden .navbar {
     border: 1px solid rgba(52, 73, 94, 0.2) !important;
     color: #34495e !important;
     text-shadow: none !important;
+    padding: 12px 18px !important; /* 增加点击区域 */
+    cursor: pointer !important;
+    position: relative !important;
+    z-index: 1001 !important;
+    min-height: 20px !important;
+    display: flex !important;
+    align-items: center !important;
 }
 
 .language-btn:hover {
-    background: rgba(52, 152, 219, 0.1) !important;
+    background: rgba(52, 152, 219, 0.15) !important;
     border-color: rgba(52, 152, 219, 0.3) !important;
     color: #2c3e50 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2) !important;
+}
+
+/* 点击增强 - 添加点击反馈 */
+.nav-link:active,
+.language-btn:active {
+    transform: translateY(0px) !important;
+    background: rgba(52, 152, 219, 0.25) !important;
+    transition: all 0.1s ease !important;
+}
+
+/* 确保导航元素可点击性 */
+.nav-menu,
+.nav-item,
+.language-switcher {
+    pointer-events: auto !important;
+    position: relative !important;
+    z-index: 1011 !important;
 }
 
 /* 强制显示Hero区域 */
@@ -213,7 +250,7 @@ body.top-bar-hidden .navbar {
     opacity: 1 !important;
 }
 
-/* 页面装饰强制显示 */
+/* 页面装饰强制显示 - 降低z-index避免干扰导航栏 */
 .page-decoration {
     position: fixed !important;
     top: 0 !important;
@@ -221,10 +258,11 @@ body.top-bar-hidden .navbar {
     right: 0 !important;
     height: 4px !important;
     background: linear-gradient(90deg, #495057, #6c757d, #adb5bd, #dee2e6, #e9ecef, #f8f9fa) !important;
-    z-index: 1001 !important;
+    z-index: 999 !important; /* 降低z-index，确保在导航栏下方 */
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
+    pointer-events: none !important; /* 禁用点击事件，避免干扰 */
 }
 
 /* 主内容区域 */
