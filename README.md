@@ -82,9 +82,17 @@ shopSite/
 │   │   └── admin.js       # 管理后台逻辑
 │   ├── index.html         # 主站首页
 │   └── admin.html         # 管理后台
+├── database_management/   # 数据库管理脚本集合
+│   ├── initialize_db.py   # 主数据库初始化脚本
+│   ├── init_featured_products.py # 特色产品初始化
+│   ├── migrate_*.py       # 各种数据库迁移脚本
+│   ├── create_default_admin.py # 创建默认管理员
+│   ├── test_db.py         # 数据库测试脚本
+│   ├── db_manager.py      # 数据库管理工具
+│   ├── quick_init.bat     # 快速初始化脚本
+│   └── README.md          # 数据库管理说明
 ├── uploads/               # 上传文件目录
 ├── main.py                # 主应用文件
-├── initialize_db.py       # 数据库初始化
 ├── requirements.txt       # Python依赖
 ├── start_server.bat       # Windows启动脚本
 └── README.md              # 项目说明
@@ -110,14 +118,31 @@ shopSite/
    - 创建数据库（可选，程序会自动创建）
    - 修改 `config/settings.ini` 中的数据库配置
 
-3. **一键启动**
+3. **安装依赖**
    ```bash
-   # Windows
-   start_server.bat
+   pip install -r requirements.txt
+   ```
+
+4. **数据库初始化**
+   ```bash
+   # 使用快速初始化脚本 (推荐)
+   database_management\quick_init.bat
+   
+   # 或使用数据库管理工具
+   database_management\run_db_manager.bat
    
    # 或手动执行
-   pip install -r requirements.txt
-   python initialize_db.py
+   python database_management\initialize_db.py
+   python database_management\init_featured_products.py
+   python database_management\create_default_admin.py
+   ```
+
+5. **启动应用**
+   ```bash
+   # Windows一键启动
+   start_server.bat
+   
+   # 或手动启动
    python main.py
    ```
 
