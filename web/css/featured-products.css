@@ -237,6 +237,13 @@
     gap: 10px;
 }
 
+.featured-product-card .product-price::before {
+    content: '$';
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #e74c3c;
+}
+
 .featured-product-card .price-current {
     font-size: 1.5rem;
     font-weight: 700;

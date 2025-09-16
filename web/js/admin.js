@@ -689,7 +689,7 @@ function renderProductsTable(products, categories) {
                 <td>${product.name}</td>
                 <td>${product.sku}</td>
                 <td>${category ? category.name : '-'}</td>
-                <td>¥${product.price.toFixed(2)}</td>
+                <td>$${product.price.toFixed(2)}</td>
                 <td>${product.stock_quantity || product.stock || 0}</td>
                 <td>
                     <span class="status-badge ${product.is_active ? 'status-active' : 'status-inactive'}">
@@ -1269,7 +1269,7 @@ function renderFilledPositionAdmin(positionData, position) {
                     库存: ${product.stock || '充足'}
                 </div>
                 <div class="position-product-price-admin">
-                    ¥${parseFloat(product.price || 0).toFixed(2)}
+                    $${parseFloat(product.price || 0).toFixed(2)}
                 </div>
             </div>
         </div>
@@ -1288,7 +1288,7 @@ function openProductSelectorModal(position) {
 
     let options = products.map(p => {
         const category = featuredProductsData.categories.find(c => c.id === p.category_id);
-        return `${p.name} (${category?.name || '无分类'}) - ¥${parseFloat(p.price || 0).toFixed(2)}`;
+        return `${p.name} (${category?.name || '无分类'}) - $${parseFloat(p.price || 0).toFixed(2)}`;
     });
 
     const selection = prompt(`为位置 ${position} 选择产品：\n\n` + 

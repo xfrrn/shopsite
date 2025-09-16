@@ -231,7 +231,7 @@ class FeaturedProducts {
                 <div class="product-info">
                     <h3 class="product-name">${productName}</h3>
                     <p class="product-description">${productDescription}</p>
-                    <div class="product-price">¥${productPrice}</div>
+                    <div class="product-price">${productPrice}</div>
                     <button class="product-btn modern-btn" onclick="event.stopPropagation(); showProductDetails(${product.id})">
                         <span class="btn-text">${btnText}</span>
                         <span class="btn-icon">

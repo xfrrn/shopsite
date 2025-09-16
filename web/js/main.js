@@ -464,7 +464,7 @@ function renderProducts(products) {
                 <div class="product-info">
                     <h3>${product.name}</h3>
                     <p>${truncateText(product.description || '', 100)}</p>
-                    <div class="product-price">¥${product.price.toFixed(2)}</div>
+                    <div class="product-price">${product.price.toFixed(2)}</div>
                     <div class="product-meta">
                         <span class="brand">${product.brand || ''}</span>
                         <span class="stock-info ${stockQuantity < 10 ? 'low-stock' : ''}">
@@ -696,7 +696,7 @@ function renderProductModal(product) {
             }
         </div>
         <h2 class="product-detail-title">${productName}</h2>
-        <div class="product-detail-price">¥${product.price.toFixed(2)}</div>
+        <div class="product-detail-price">${product.price.toFixed(2)}</div>
         <div class="product-description">
             <p>${productDescription}</p>
         </div>

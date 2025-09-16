@@ -380,7 +380,7 @@ class AutoTranslator {
 
         // 跳过数字、符号等
         const text = element.textContent.trim();
-        if (/^[\d\s\-+.,%$¥€£]+$/.test(text)) {
+        if (/^[\d\s\-+.,%$€£]+$/.test(text)) {
             return true;
         }
 

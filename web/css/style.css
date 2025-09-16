@@ -1316,9 +1316,9 @@ body.hero-fullscreen .categories-section {
 }
 
 .product-price::before {
-    content: '¥';
-    font-size: 1.1rem;
-    font-weight: 500;
+    content: '$';
+    font-size: 1.9rem;
+    font-weight: 600;
     color: var(--primary-dark);
 }
 
@@ -1557,6 +1557,13 @@ body.hero-fullscreen .categories-section {
     color: #e53e3e;
     font-weight: 700;
     margin-bottom: 20px;
+}
+
+.product-detail-price::before {
+    content: '$';
+    font-size: 2.7rem;
+    font-weight: 700;
+    color: #e53e3e;
 }
 
 .product-specs {

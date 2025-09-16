@@ -211,9 +211,9 @@ function renderFeaturedProductsTable() {
                          onerror="this.src='https://via.placeholder.com/300x300/f8f9fa/6c757d?text=Product'">
                 </td>
                 <td>
-                    <div class="price-display">¥${product.price || '0.00'}</div>
+                    <div class="price-display">$${product.price || '0.00'}</div>
                     ${product.original_price && product.original_price > product.price ? 
-                        `<small style="color: #6c757d; text-decoration: line-through;">¥${product.original_price}</small>` : ''
+                        `<small style="color: #6c757d; text-decoration: line-through;">$${product.original_price}</small>` : ''
                     }
                 </td>
                 <td>
@@ -319,7 +319,7 @@ function renderProductsList() {
                 <h4>${product.name}</h4>
                 <p>${product.description || '无描述'}</p>
             </div>
-            <div class="product-item-price">¥${product.price}</div>
+            <div class="product-item-price">$${product.price}</div>
         </div>
     `).join('');
     
